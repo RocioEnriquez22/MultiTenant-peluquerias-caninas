@@ -134,7 +134,7 @@ export default function TurnoFormModal({
         [data.fecha],
     );
 
-    // Mascotas disponibles según el cliente elegido
+    // Mascotas disponibles según el cliente elegido con useMemo como memo cache
     const mascotasDelCliente = useMemo(() => {
         const cliente = clientes.find((c) => c.id === data.cliente_id);
         return cliente ? cliente.mascotas : [];
@@ -195,9 +195,6 @@ export default function TurnoFormModal({
 
     //para el uso del combobox
     const [busquedaCliente, setBusquedaCliente] = useState("");
-
-    const clienteSeleccionado =
-        clientes.find((c) => c.id === data.cliente_id) ?? null;
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -311,7 +308,7 @@ export default function TurnoFormModal({
                         </div>
 
                         <div className="space-y-1">
-                            <Label htmlFor="mascota_id">Mascota *</Label>
+                            <Label>Mascota *</Label>
                             <Select
                                 value={data.mascota_id}
                                 onValueChange={(val) =>
@@ -322,7 +319,7 @@ export default function TurnoFormModal({
                                     mascotasDelCliente.length === 0
                                 }
                             >
-                                <SelectTrigger id="mascota_id">
+                                <SelectTrigger>
                                     <SelectValue
                                         placeholder={
                                             !data.cliente_id
