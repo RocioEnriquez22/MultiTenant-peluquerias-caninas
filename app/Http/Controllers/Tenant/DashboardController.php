@@ -90,16 +90,29 @@ class DashboardController extends Controller
             'transferencia' => 'Transferencia',
             'pendiente' => 'Pendiente',
         ];
-        $ingresosPorMetodo = Turno::query()
-            ->select('metodo_pago', DB::raw('SUM(monto_cobrado) as total'))
-            ->where('estado', 'listo')
-            ->whereBetween('fecha', [$inicioMes, $finMes])
-            ->groupBy('metodo_pago')
-            ->get()
-            ->map(fn($item): array => [
-                'name' => $etiquetasPago[$item->metodo_pago] ?? ucfirst((string) $item->metodo_pago),
-                'value' => (float) $item->total,
-            ]);
+        $agruparCobrosPorRango = function (string $desde, string $hasta) use ($etiquetasPago) {
+            return Turno::query()
+                ->select('metodo_pago', DB::raw('SUM(monto_cobrado) as total'))
+                ->where('estado', 'listo')
+                ->whereBetween('fecha', [$desde, $hasta])
+                ->groupBy('metodo_pago')
+                ->get()
+                ->map(fn($item): array => [
+                    'name' => $etiquetasPago[$item->metodo_pago] ?? ucfirst((string) $item->metodo_pago),
+                    'value' => (float) $item->total,
+                ]);
+        };
+        $ingresosPorMetodo = [
+            'semana' => $agruparCobrosPorRango(
+                now()->startOfWeek()->toDateString(),
+                now()->endOfWeek()->toDateString(),
+            ),
+            'mes' => $agruparCobrosPorRango($inicioMes, $finMes),
+            'año' => $agruparCobrosPorRango(
+                now()->startOfYear()->toDateString(),
+                now()->endOfYear()->toDateString(),
+            ),
+        ];
 
         //Turnos realizados y facturacion de cada empleado en mes
         $rendimientoEquipo = TenantUser::query()

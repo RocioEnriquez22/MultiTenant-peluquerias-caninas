@@ -1,4 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
+import { useState } from "react";
 import {
     ArrowUpRight,
     CalendarCheck,
@@ -38,6 +39,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+
 interface TenantInfo {
     id: string;
     nombre: string;
@@ -84,12 +86,19 @@ interface UltimoTurnoItem {
     metodo_pago: string;
     monto_cobrado: number;
 }
+type PeriodoPago = "semana" | "mes" | "año";
+
+interface IngresosPorMetodoMap {
+    semana: MetodoPagoChartItem[];
+    mes: MetodoPagoChartItem[];
+    año: MetodoPagoChartItem[];
+}
 
 interface Props {
     tenant: TenantInfo;
     metrics?: DashboardMetrics;
     serviciosSolicitados?: ServicioChartItem[];
-    ingresosPorMetodo?: MetodoPagoChartItem[];
+    ingresosPorMetodo?: IngresosPorMetodoMap;
     rendimientoEquipo?: EquipoItem[];
     ultimosTurnos?: UltimoTurnoItem[];
 }
@@ -116,10 +125,19 @@ export default function TenantDashboard({
         turnos_listos_mes: 0,
     },
     serviciosSolicitados = [],
-    ingresosPorMetodo = [],
+    ingresosPorMetodo = { semana: [], mes: [], año: [] },
     rendimientoEquipo = [],
     ultimosTurnos = [],
 }: Props) {
+    const [periodoPago, setPeriodoPago] = useState<PeriodoPago>("mes");
+    const datosPagoActuales = ingresosPorMetodo[periodoPago] ?? [];
+
+    const subtituloPeriodo: Record<PeriodoPago, string> = {
+        semana: "Distribución de cobros realizados esta semana",
+        mes: "Distribución de cobros realizados este mes",
+        año: "Distribución de cobros realizados este año",
+    };
+
     return (
         <>
             <Head title={`Dashboard - ${tenant.nombre}`} />
@@ -223,9 +241,9 @@ export default function TenantDashboard({
                     </Card>
                 </div>
 
-                {/* Fila 2: Gráficos Recharts (Barras + Dona) */}
+                {/*Graficos Recharts (Barras + Dona) */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                    {/* Gráfico de Barras: Servicios más solicitados */}
+                    {/* Grafico de Barras: Servicios más solicitados */}
                     <Card className="lg:col-span-4">
                         <CardHeader>
                             <CardTitle>Servicios Más Solicitados</CardTitle>
@@ -287,18 +305,51 @@ export default function TenantDashboard({
                         </CardContent>
                     </Card>
 
-                    {/* Gráfico de Dona: Ingresos por Medio de Pago */}
+                    {/* Grafico piechart: Ingresos por Medio de Pago */}
                     <Card className="lg:col-span-3">
-                        <CardHeader>
-                            <CardTitle>Ingresos por Medio de Pago</CardTitle>
-                            <CardDescription>
-                                Distribución de cobros realizados este mes
-                            </CardDescription>
+                        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                                <CardTitle>
+                                    Ingresos por Medio de Pago
+                                </CardTitle>
+                                <CardDescription>
+                                    {subtituloPeriodo[periodoPago]}
+                                </CardDescription>
+                            </div>
+
+                            {/* Botones Semana / Mes / Año */}
+                            <div className="inline-flex items-center rounded-lg border bg-muted/50 p-0.5 self-start">
+                                {(
+                                    [
+                                        { key: "semana", label: "Semana" },
+                                        { key: "mes", label: "Mes" },
+                                        { key: "año", label: "Año" },
+                                    ] as const
+                                ).map((opcion) => (
+                                    <Button
+                                        key={opcion.key}
+                                        type="button"
+                                        size="sm"
+                                        variant={
+                                            periodoPago === opcion.key
+                                                ? "secondary"
+                                                : "ghost"
+                                        }
+                                        onClick={() =>
+                                            setPeriodoPago(opcion.key)
+                                        }
+                                        className="h-7 px-2.5 text-xs font-medium"
+                                    >
+                                        {opcion.label}
+                                    </Button>
+                                ))}
+                            </div>
                         </CardHeader>
                         <CardContent>
-                            {ingresosPorMetodo.length === 0 ? (
+                            {datosPagoActuales.length === 0 ? (
                                 <div className="flex h-72 items-center justify-center text-sm text-muted-foreground">
-                                    Sin cobros registrados en el mes actual.
+                                    Sin cobros registrados en el período
+                                    seleccionado.
                                 </div>
                             ) : (
                                 <div className="h-72 w-full">
@@ -308,7 +359,7 @@ export default function TenantDashboard({
                                     >
                                         <PieChart>
                                             <Pie
-                                                data={ingresosPorMetodo}
+                                                data={datosPagoActuales}
                                                 cx="50%"
                                                 cy="50%"
                                                 innerRadius={55}
@@ -316,7 +367,7 @@ export default function TenantDashboard({
                                                 paddingAngle={5}
                                                 dataKey="value"
                                             >
-                                                {ingresosPorMetodo.map(
+                                                {datosPagoActuales.map(
                                                     (_, index) => (
                                                         <Cell
                                                             key={`cell-${index}`}
@@ -348,7 +399,7 @@ export default function TenantDashboard({
                     </Card>
                 </div>
 
-                {/* Fila 3: Tablas Relacionales */}
+                {/* Tablas Relacionales */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                     {/* Tabla Equipo */}
                     <Card className="lg:col-span-3">

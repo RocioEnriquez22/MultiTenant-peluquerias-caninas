@@ -102,7 +102,7 @@ class ServicioController extends Controller
 
         Gate::forUser($currentUser)->authorize('delete', $servicio);
 
-        $tieneTurnos = DB::table('turno_x_srvicio')
+        $tieneTurnos = DB::table('turno_servicio')
             ->where('servicio_id', $servicio->id)
             ->exists();
 
