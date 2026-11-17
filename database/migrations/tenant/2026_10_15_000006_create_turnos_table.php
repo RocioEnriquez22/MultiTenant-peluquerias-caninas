@@ -20,8 +20,6 @@ return new class extends Migration
 
             $table->foreignUuid('empleado_id')->nullable()->constrained('users')->onDelete('set null');
 
-
-
             $table->timestamp('finalizado_at')->nullable();
 
             // Fecha y hora del turno agendado

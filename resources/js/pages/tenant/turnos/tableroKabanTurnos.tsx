@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { router } from "@inertiajs/react";
+import { useEffect, useState } from "react";
+import { router, usePage } from "@inertiajs/react";
 import {
     CalendarIcon,
-    Clock,
+    Lock,
+    RotateCcw,
     Dog,
     Plus,
     User,
@@ -102,20 +103,31 @@ function agruparPorEstado(
 interface TurnoCardProps {
     turno: TurnoDiarioItem;
     isOverlay?: boolean;
+    puedeGestionar?: boolean;
     onEdit?: (turno: TurnoDiarioItem) => void;
     onRequestFinalizar?: (turno: TurnoDiarioItem) => void;
+    onLiberarTurno?: (turno: TurnoDiarioItem) => void;
 }
 
 function TurnoCard({
     turno,
     isOverlay,
+    puedeGestionar = true,
     onEdit,
     onRequestFinalizar,
+    onLiberarTurno,
 }: TurnoCardProps) {
+    const bloqueadoPorOtro =
+        turno.estado === "en_proceso" &&
+        turno.realizado_por !== null &&
+        !puedeGestionar;
     const card = (
         <div
             className={cn(
                 "w-[14rem] shrink-0 md:w-full h-[12rem] shrink-0 md:h-full bg-white rounded-xl border border-gray-100 p-3.5 shadow-xs transition-all space-y-2.5",
+                bloqueadoPorOtro
+                    ? "border-amber-200/80 bg-amber-50/20 opacity-90"
+                    : "border-gray-100",
                 !isOverlay && "hover:border-indigo-300/70 hover:shadow-sm",
                 isOverlay && "ring-2 ring-indigo-400/30 rotate-1 shadow-lg",
             )}
@@ -163,7 +175,9 @@ function TurnoCard({
                                 <Eye className="size-3.5 mr-2" />
                                 Ver ficha completa
                             </DropdownMenuItem>
-                            {turno.estado !== "listo" &&
+
+                            {puedeGestionar &&
+                                turno.estado !== "listo" &&
                                 turno.estado !== "cancelado" && (
                                     <DropdownMenuItem
                                         onClick={() => onEdit?.(turno)}
@@ -172,7 +186,17 @@ function TurnoCard({
                                         Editar turno
                                     </DropdownMenuItem>
                                 )}
-                            {turno.estado !== "listo" && (
+                            {puedeGestionar &&
+                                turno.estado === "en_proceso" && (
+                                    <DropdownMenuItem
+                                        onClick={() => onLiberarTurno?.(turno)}
+                                        className="text-slate-700"
+                                    >
+                                        <RotateCcw className="size-3.5 mr-2" />
+                                        Volver a Pendiente (Liberar)
+                                    </DropdownMenuItem>
+                                )}
+                            {puedeGestionar && turno.estado !== "listo" && (
                                 <DropdownMenuItem
                                     onClick={() => onRequestFinalizar?.(turno)}
                                     className="text-emerald-700 font-medium"
@@ -214,8 +238,43 @@ function TurnoCard({
                     <CalendarIcon className="size-3.5 text-gray-400" />
                     {turno.hora} hs
                 </span>
+                {turno.estado === "en_proceso" && (
+                    <div className="flex items-center gap-1.5 min-w-0">
+                        {turno.realizado_por && (
+                            <span
+                                title={`En atención por ${turno.realizado_por.nombre} ${turno.realizado_por.apellido || ""}`}
+                                className={cn(
+                                    "inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full truncate",
+                                    bloqueadoPorOtro
+                                        ? "bg-amber-100 text-amber-800"
+                                        : "bg-indigo-50 text-indigo-700",
+                                )}
+                            >
+                                {bloqueadoPorOtro ? (
+                                    <Lock className="size-2.5 shrink-0" />
+                                ) : (
+                                    <UserCheck className="size-3 shrink-0" />
+                                )}
+                                <span className="truncate">
+                                    {turno.realizado_por.nombre}
+                                </span>
+                            </span>
+                        )}
 
-                {turno.estado === "listo" && turno.realizado_por ? (
+                        {puedeGestionar && !isOverlay && (
+                            <button
+                                type="button"
+                                onPointerDown={(e) => e.stopPropagation()}
+                                onClick={() => onRequestFinalizar?.(turno)}
+                                className="text-[11px] font-semibold text-emerald-600 hover:text-emerald-800 hover:underline whitespace-nowrap"
+                            >
+                                Finalizar
+                            </button>
+                        )}
+                    </div>
+                )}
+                {/* Estado LISTO: Muestra quién lo realizó */}
+                {turno.estado === "listo" && turno.realizado_por && (
                     <span
                         title={`Atendido por ${turno.realizado_por.nombre} ${turno.realizado_por.apellido || ""}`}
                         className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full"
@@ -223,27 +282,30 @@ function TurnoCard({
                         <UserCheck className="size-3" />
                         {turno.realizado_por.nombre}
                     </span>
-                ) : (
-                    turno.estado !== "listo" &&
-                    turno.estado !== "cancelado" &&
-                    !isOverlay && (
-                        <Button
-                            variant="link"
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onClick={() => onRequestFinalizar?.(turno)}
-                            className="text-[11px] font-semibold text-emerald-600 hover:text-emerald-800 hover:underline"
-                        >
-                            Finalizar
-                        </Button>
-                    )
+                )}
+
+                {/* Estado PENDIENTE: Acción rápida para finalizar directo si hace falta */}
+                {turno.estado === "pendiente" && !isOverlay && (
+                    <button
+                        type="button"
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onClick={() => onRequestFinalizar?.(turno)}
+                        className="text-[11px] font-semibold text-emerald-600 hover:text-emerald-800 hover:underline whitespace-nowrap"
+                    >
+                        Finalizar
+                    </button>
                 )}
             </div>
         </div>
     );
 
     return (
-        <KanbanItem value={turno.id}>
-            {isOverlay ? card : <KanbanItemHandle>{card}</KanbanItemHandle>}
+        <KanbanItem value={turno.id} disabled={bloqueadoPorOtro}>
+            {isOverlay || bloqueadoPorOtro ? (
+                card
+            ) : (
+                <KanbanItemHandle>{card}</KanbanItemHandle>
+            )}
         </KanbanItem>
     );
 }
@@ -255,6 +317,28 @@ export default function TableroKanbanTurnos({
     onEditTurno,
     onRequestFinalizar,
 }: Props) {
+    const { auth } = usePage<{
+        auth: {
+            user: { id: string } | null;
+            roles?: string[];
+        };
+    }>().props;
+    const currentUserId = auth?.user?.id ?? null;
+    const esDueno = Boolean(
+        auth?.roles?.some((r) => r === "dueño_principal" || r === "dueño"),
+    );
+    const puedeGestionarTurno = (turno: TurnoDiarioItem): boolean => {
+        if (esDueno) return true;
+        if (
+            turno.estado === "en_proceso" &&
+            turno.realizado_por &&
+            turno.realizado_por.id !== currentUserId
+        ) {
+            return false;
+        }
+        return true;
+    };
+
     const [columns, setColumns] = useState<Record<string, TurnoDiarioItem[]>>(
         () => agruparPorEstado(turnos),
     );
@@ -263,6 +347,16 @@ export default function TableroKanbanTurnos({
     useEffect(() => {
         setColumns(agruparPorEstado(turnos));
     }, [turnos]);
+    const handleLiberarTurno = (turno: TurnoDiarioItem) => {
+        router.patch(
+            `/turnos/${turno.id}/estado`,
+            { estado: "pendiente" },
+            {
+                preserveScroll: true,
+                onError: () => setColumns(agruparPorEstado(turnos)),
+            },
+        );
+    };
 
     const handleMove = ({
         activeContainer,
@@ -277,7 +371,10 @@ export default function TableroKanbanTurnos({
             (t) => t.id === turnoId,
         );
 
-        if (!turnoMovido) return;
+        if (!turnoMovido || !puedeGestionarTurno(turnoMovido)) {
+            setColumns(agruparPorEstado(turnos));
+            return;
+        }
 
         // Si lo sueltan en 'listo', pedimos confirmar medio de pago y monto antes de guardar
         if (nuevoEstado === "listo") {
@@ -368,9 +465,15 @@ export default function TableroKanbanTurnos({
                                             <TurnoCard
                                                 key={turno.id}
                                                 turno={turno}
+                                                puedeGestionar={puedeGestionarTurno(
+                                                    turno,
+                                                )}
                                                 onEdit={onEditTurno}
                                                 onRequestFinalizar={
                                                     onRequestFinalizar
+                                                }
+                                                onLiberarTurno={
+                                                    handleLiberarTurno
                                                 }
                                             />
                                         ))}

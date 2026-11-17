@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::calendario
- * @see app/Http/Controllers/Tenant/TurnoController.php:92
+ * @see app/Http/Controllers/Tenant/TurnoController.php:91
  * @route '//{tenant}.localhost/turnos/calendario'
  */
 export const calendario = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ calendario.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::calendario
- * @see app/Http/Controllers/Tenant/TurnoController.php:92
+ * @see app/Http/Controllers/Tenant/TurnoController.php:91
  * @route '//{tenant}.localhost/turnos/calendario'
  */
 calendario.url = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -44,7 +44,7 @@ calendario.url = (args: { tenant: string | number } | [tenant: string | number ]
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::calendario
- * @see app/Http/Controllers/Tenant/TurnoController.php:92
+ * @see app/Http/Controllers/Tenant/TurnoController.php:91
  * @route '//{tenant}.localhost/turnos/calendario'
  */
 calendario.get = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -53,7 +53,7 @@ calendario.get = (args: { tenant: string | number } | [tenant: string | number ]
 })
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::calendario
- * @see app/Http/Controllers/Tenant/TurnoController.php:92
+ * @see app/Http/Controllers/Tenant/TurnoController.php:91
  * @route '//{tenant}.localhost/turnos/calendario'
  */
 calendario.head = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -63,7 +63,7 @@ calendario.head = (args: { tenant: string | number } | [tenant: string | number 
 
     /**
 * @see \App\Http\Controllers\Tenant\TurnoController::calendario
- * @see app/Http/Controllers/Tenant/TurnoController.php:92
+ * @see app/Http/Controllers/Tenant/TurnoController.php:91
  * @route '//{tenant}.localhost/turnos/calendario'
  */
     const calendarioForm = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -73,7 +73,7 @@ calendario.head = (args: { tenant: string | number } | [tenant: string | number 
 
             /**
 * @see \App\Http\Controllers\Tenant\TurnoController::calendario
- * @see app/Http/Controllers/Tenant/TurnoController.php:92
+ * @see app/Http/Controllers/Tenant/TurnoController.php:91
  * @route '//{tenant}.localhost/turnos/calendario'
  */
         calendarioForm.get = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -82,7 +82,7 @@ calendario.head = (args: { tenant: string | number } | [tenant: string | number 
         })
             /**
 * @see \App\Http\Controllers\Tenant\TurnoController::calendario
- * @see app/Http/Controllers/Tenant/TurnoController.php:92
+ * @see app/Http/Controllers/Tenant/TurnoController.php:91
  * @route '//{tenant}.localhost/turnos/calendario'
  */
         calendarioForm.head = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -98,7 +98,7 @@ calendario.head = (args: { tenant: string | number } | [tenant: string | number 
     calendario.form = calendarioForm
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::estado
- * @see app/Http/Controllers/Tenant/TurnoController.php:213
+ * @see app/Http/Controllers/Tenant/TurnoController.php:215
  * @route '//{tenant}.localhost/turnos/{turno}/estado'
  */
 export const estado = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -113,7 +113,7 @@ estado.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::estado
- * @see app/Http/Controllers/Tenant/TurnoController.php:213
+ * @see app/Http/Controllers/Tenant/TurnoController.php:215
  * @route '//{tenant}.localhost/turnos/{turno}/estado'
  */
 estado.url = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
@@ -141,7 +141,7 @@ estado.url = (args: { tenant: string | number, turno: string | number | { id: st
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::estado
- * @see app/Http/Controllers/Tenant/TurnoController.php:213
+ * @see app/Http/Controllers/Tenant/TurnoController.php:215
  * @route '//{tenant}.localhost/turnos/{turno}/estado'
  */
 estado.patch = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -151,7 +151,7 @@ estado.patch = (args: { tenant: string | number, turno: string | number | { id: 
 
     /**
 * @see \App\Http\Controllers\Tenant\TurnoController::estado
- * @see app/Http/Controllers/Tenant/TurnoController.php:213
+ * @see app/Http/Controllers/Tenant/TurnoController.php:215
  * @route '//{tenant}.localhost/turnos/{turno}/estado'
  */
     const estadoForm = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -166,7 +166,7 @@ estado.patch = (args: { tenant: string | number, turno: string | number | { id: 
 
             /**
 * @see \App\Http\Controllers\Tenant\TurnoController::estado
- * @see app/Http/Controllers/Tenant/TurnoController.php:213
+ * @see app/Http/Controllers/Tenant/TurnoController.php:215
  * @route '//{tenant}.localhost/turnos/{turno}/estado'
  */
         estadoForm.patch = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -279,7 +279,7 @@ index.head = (args: { tenant: string | number } | [tenant: string | number ] | s
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::store
- * @see app/Http/Controllers/Tenant/TurnoController.php:135
+ * @see app/Http/Controllers/Tenant/TurnoController.php:134
  * @route '//{tenant}.localhost/turnos'
  */
 export const store = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -294,7 +294,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::store
- * @see app/Http/Controllers/Tenant/TurnoController.php:135
+ * @see app/Http/Controllers/Tenant/TurnoController.php:134
  * @route '//{tenant}.localhost/turnos'
  */
 store.url = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -322,7 +322,7 @@ store.url = (args: { tenant: string | number } | [tenant: string | number ] | st
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::store
- * @see app/Http/Controllers/Tenant/TurnoController.php:135
+ * @see app/Http/Controllers/Tenant/TurnoController.php:134
  * @route '//{tenant}.localhost/turnos'
  */
 store.post = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -332,7 +332,7 @@ store.post = (args: { tenant: string | number } | [tenant: string | number ] | s
 
     /**
 * @see \App\Http\Controllers\Tenant\TurnoController::store
- * @see app/Http/Controllers/Tenant/TurnoController.php:135
+ * @see app/Http/Controllers/Tenant/TurnoController.php:134
  * @route '//{tenant}.localhost/turnos'
  */
     const storeForm = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -342,7 +342,7 @@ store.post = (args: { tenant: string | number } | [tenant: string | number ] | s
 
             /**
 * @see \App\Http\Controllers\Tenant\TurnoController::store
- * @see app/Http/Controllers/Tenant/TurnoController.php:135
+ * @see app/Http/Controllers/Tenant/TurnoController.php:134
  * @route '//{tenant}.localhost/turnos'
  */
         storeForm.post = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -353,7 +353,7 @@ store.post = (args: { tenant: string | number } | [tenant: string | number ] | s
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::show
- * @see app/Http/Controllers/Tenant/TurnoController.php:264
+ * @see app/Http/Controllers/Tenant/TurnoController.php:280
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 export const show = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -368,7 +368,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::show
- * @see app/Http/Controllers/Tenant/TurnoController.php:264
+ * @see app/Http/Controllers/Tenant/TurnoController.php:280
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 show.url = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
@@ -396,7 +396,7 @@ show.url = (args: { tenant: string | number, turno: string | number | { id: stri
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::show
- * @see app/Http/Controllers/Tenant/TurnoController.php:264
+ * @see app/Http/Controllers/Tenant/TurnoController.php:280
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 show.get = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -405,7 +405,7 @@ show.get = (args: { tenant: string | number, turno: string | number | { id: stri
 })
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::show
- * @see app/Http/Controllers/Tenant/TurnoController.php:264
+ * @see app/Http/Controllers/Tenant/TurnoController.php:280
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 show.head = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -415,7 +415,7 @@ show.head = (args: { tenant: string | number, turno: string | number | { id: str
 
     /**
 * @see \App\Http\Controllers\Tenant\TurnoController::show
- * @see app/Http/Controllers/Tenant/TurnoController.php:264
+ * @see app/Http/Controllers/Tenant/TurnoController.php:280
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
     const showForm = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -425,7 +425,7 @@ show.head = (args: { tenant: string | number, turno: string | number | { id: str
 
             /**
 * @see \App\Http\Controllers\Tenant\TurnoController::show
- * @see app/Http/Controllers/Tenant/TurnoController.php:264
+ * @see app/Http/Controllers/Tenant/TurnoController.php:280
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
         showForm.get = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -434,7 +434,7 @@ show.head = (args: { tenant: string | number, turno: string | number | { id: str
         })
             /**
 * @see \App\Http\Controllers\Tenant\TurnoController::show
- * @see app/Http/Controllers/Tenant/TurnoController.php:264
+ * @see app/Http/Controllers/Tenant/TurnoController.php:280
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
         showForm.head = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -450,7 +450,7 @@ show.head = (args: { tenant: string | number, turno: string | number | { id: str
     show.form = showForm
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::update
- * @see app/Http/Controllers/Tenant/TurnoController.php:175
+ * @see app/Http/Controllers/Tenant/TurnoController.php:176
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 export const update = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -465,7 +465,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::update
- * @see app/Http/Controllers/Tenant/TurnoController.php:175
+ * @see app/Http/Controllers/Tenant/TurnoController.php:176
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 update.url = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
@@ -493,7 +493,7 @@ update.url = (args: { tenant: string | number, turno: string | number | { id: st
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::update
- * @see app/Http/Controllers/Tenant/TurnoController.php:175
+ * @see app/Http/Controllers/Tenant/TurnoController.php:176
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 update.put = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -502,7 +502,7 @@ update.put = (args: { tenant: string | number, turno: string | number | { id: st
 })
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::update
- * @see app/Http/Controllers/Tenant/TurnoController.php:175
+ * @see app/Http/Controllers/Tenant/TurnoController.php:176
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 update.patch = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -512,7 +512,7 @@ update.patch = (args: { tenant: string | number, turno: string | number | { id: 
 
     /**
 * @see \App\Http\Controllers\Tenant\TurnoController::update
- * @see app/Http/Controllers/Tenant/TurnoController.php:175
+ * @see app/Http/Controllers/Tenant/TurnoController.php:176
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
     const updateForm = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -527,7 +527,7 @@ update.patch = (args: { tenant: string | number, turno: string | number | { id: 
 
             /**
 * @see \App\Http\Controllers\Tenant\TurnoController::update
- * @see app/Http/Controllers/Tenant/TurnoController.php:175
+ * @see app/Http/Controllers/Tenant/TurnoController.php:176
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
         updateForm.put = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -541,7 +541,7 @@ update.patch = (args: { tenant: string | number, turno: string | number | { id: 
         })
             /**
 * @see \App\Http\Controllers\Tenant\TurnoController::update
- * @see app/Http/Controllers/Tenant/TurnoController.php:175
+ * @see app/Http/Controllers/Tenant/TurnoController.php:176
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
         updateForm.patch = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -557,7 +557,7 @@ update.patch = (args: { tenant: string | number, turno: string | number | { id: 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::destroy
- * @see app/Http/Controllers/Tenant/TurnoController.php:252
+ * @see app/Http/Controllers/Tenant/TurnoController.php:268
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 export const destroy = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -572,7 +572,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::destroy
- * @see app/Http/Controllers/Tenant/TurnoController.php:252
+ * @see app/Http/Controllers/Tenant/TurnoController.php:268
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 destroy.url = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
@@ -600,7 +600,7 @@ destroy.url = (args: { tenant: string | number, turno: string | number | { id: s
 
 /**
 * @see \App\Http\Controllers\Tenant\TurnoController::destroy
- * @see app/Http/Controllers/Tenant/TurnoController.php:252
+ * @see app/Http/Controllers/Tenant/TurnoController.php:268
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
 destroy.delete = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -610,7 +610,7 @@ destroy.delete = (args: { tenant: string | number, turno: string | number | { id
 
     /**
 * @see \App\Http\Controllers\Tenant\TurnoController::destroy
- * @see app/Http/Controllers/Tenant/TurnoController.php:252
+ * @see app/Http/Controllers/Tenant/TurnoController.php:268
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
     const destroyForm = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -625,7 +625,7 @@ destroy.delete = (args: { tenant: string | number, turno: string | number | { id
 
             /**
 * @see \App\Http\Controllers\Tenant\TurnoController::destroy
- * @see app/Http/Controllers/Tenant/TurnoController.php:252
+ * @see app/Http/Controllers/Tenant/TurnoController.php:268
  * @route '//{tenant}.localhost/turnos/{turno}'
  */
         destroyForm.delete = (args: { tenant: string | number, turno: string | number | { id: string | number } } | [tenant: string | number, turno: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

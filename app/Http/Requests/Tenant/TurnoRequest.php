@@ -13,35 +13,12 @@ class TurnoRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $currentUser = auth('tenant')->user();
-
-        if (! $currentUser) {
-            return false;
-        }
-
-        // Transición de estado en el tablero Kanban (PATCH q solo cambia estados que se especifican en la peticion
-        if ($this->routeIs('tenant.turnos.estado') || $this->isMethod('patch')) {
-            $turno = $this->route('turno');
-            $turnoModel = $turno instanceof Turno ? $turno : Turno::find($turno);
-
-            return $turnoModel && Gate::forUser($currentUser)->allows('cambiarEstado', $turnoModel);
-        }
-
-        // Edición de datos del turno PUT 
-        if ($this->isMethod('put')) {
-            $turno = $this->route('turno');
-            $turnoModel = $turno instanceof Turno ? $turno : Turno::find($turno);
-
-            return $turnoModel && Gate::forUser($currentUser)->allows('update', $turnoModel);
-        }
-
-        // Agendamiento de nuevo turno (POST)
-        return Gate::forUser($currentUser)->allows('create', Turno::class);
+        return true;
     }
 
     public function rules(): array
     {
-        // Cambio de estado en el tablero Kanban (y registro de cobro si pasa a 'listo')
+        // Cambio de estado en el tablero Kanban y registro de cobro si pasa a 'listo'
         if ($this->routeIs('tenant.turnos.estado') || $this->isMethod('patch')) {
             return [
                 'estado' => ['required', Rule::in(['pendiente', 'en_proceso', 'listo', 'cancelado'])],

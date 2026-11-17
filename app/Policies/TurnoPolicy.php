@@ -62,18 +62,26 @@ class TurnoPolicy
             || $user->can('turnos.update_own')
             || $user->can('kanban.manage_any');
     }
+
     public function cambiarEstado(TenantUser $user, Turno $turno): bool
     {
         if (! $this->isAuthorizedTenantUser($user)) {
             return false;
         }
 
-        /** @var TenantUser $user */
-        return $user->hasAnyRole(['dueño_principal', 'dueño', 'empleado'], 'tenant')
+        if (
+            $user->hasAnyRole(['dueño_principal', 'dueño', 'empleado'], 'tenant')
             || $user->can('kanban.manage_any')
-            || $user->can('turnos.update_own');
-    }
+            || $user->can('turnos.update_own')
+        ) {
+            return true;
+        }
 
+        if ($turno->estado == 'en_proceso' && $turno->empleado_id !== null && $turno->empleado_id !== $user->id) {
+            return false;
+        }
+        return $this->viewAny($user);
+    }
     /**
      * Determine whether the user can delete the model.
      */

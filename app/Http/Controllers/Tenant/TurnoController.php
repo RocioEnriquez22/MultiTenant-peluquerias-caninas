@@ -46,7 +46,6 @@ class TurnoController extends Controller
                     'cliente_id' => $turno->cliente_id,
                     'mascota_id' => $turno->mascota_id,
                     'fecha' => $turno->fecha->format('Y-m-d'),
-                    // Cortamos los segundos ('10:30:00' -> '10:30') para compatibilidad con <input type="time">
                     'hora' => substr((string) $turno->hora, 0, 5),
                     'estado' => $turno->estado,
                     'finalizado_at' => $turno->finalizado_at?->format('H:i'),
@@ -135,6 +134,8 @@ class TurnoController extends Controller
     public function store(TurnoRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+        $currentUser = auth('tenant')->user();
+        Gate::forUser($currentUser)->authorize('create', Turno::class);
 
         DB::transaction(function () use ($validated): void {
             // Buscamos los servicios seleccionados para congelar su precio actual
@@ -175,6 +176,8 @@ class TurnoController extends Controller
     public function update(TurnoRequest $request, string $tenant, Turno $turno): RedirectResponse
     {
         $validated = $request->validated();
+        $currentUser = auth('tenant')->user();
+        Gate::forUser($currentUser)->authorize('update', $turno);
 
         DB::transaction(function () use ($turno, $validated): void {
             $serviciosSeleccionados = Servicio::whereIn('id', $validated['servicios'])->get();
@@ -208,40 +211,53 @@ class TurnoController extends Controller
 
     /**
      * Cambia el estado en el Tablero Kanban.
-     * Si pasa a 'listo', registra quién lo realizó (auth('tenant')->id()), la hora y el pago.
      */
     public function cambiarEstado(TurnoRequest $request, string $tenant, Turno $turno): RedirectResponse
     {
+        $currentUser = auth('tenant')->user();
+        Gate::forUser($currentUser)->authorize('cambiarEstado', $turno);
         $validated = $request->validated();
         $nuevoEstado = $validated['estado'];
+
+        if ($nuevoEstado === 'en_proceso') {
+            if ($turno->estado !== 'pendiente') {
+                $this->flashToast('error', 'Este turno ya fue tomado por otro usuario.');
+                return redirect()->back();
+            }
+            $turno->update([
+                'estado' => 'en_proceso',
+                'empleado_id' => $currentUser->id,
+            ]);
+            $this->flashToast('success', 'Turno tomado (En Proceso).');
+            return redirect()->back();
+        }
 
         if ($nuevoEstado === 'listo') {
             $turno->update([
                 'estado' => 'listo',
-                'empleado_id' => auth('tenant')->id(), // Constancia de quién realizó el turno
+                'empleado_id' => $turno->empleado_id ?? $currentUser->id,
                 'finalizado_at' => now(),
                 'metodo_pago' => $validated['metodo_pago'],
                 'monto_cobrado' => $validated['monto_cobrado'],
             ]);
 
             $this->flashToast('success', 'Turno finalizado y cobro registrado.');
-        } else {
-            // Si vuelve a pendiente, en_proceso o se cancela
-            $turno->update([
-                'estado' => $nuevoEstado,
-                'empleado_id' => null,
-                'finalizado_at' => null,
-                'metodo_pago' => 'pendiente',
-            ]);
-
-            $mensajes = [
-                'pendiente' => 'El turno volvió a Pendiente.',
-                'en_proceso' => 'Mascota en atención (En Proceso).',
-                'cancelado' => 'Turno cancelado.',
-            ];
-
-            $this->flashToast('success', $mensajes[$nuevoEstado] ?? 'Estado actualizado.');
         }
+        // Si vuelve a pendiente, en_proceso o se cancela
+        $turno->update([
+            'estado' => $nuevoEstado,
+            'empleado_id' => null,
+            'finalizado_at' => null,
+            'metodo_pago' => 'pendiente',
+        ]);
+
+        $mensajes = [
+            'pendiente' => 'El turno volvió a Pendiente y quedo libre.',
+            'cancelado' => 'Turno cancelado.',
+        ];
+
+        $this->flashToast('success', $mensajes[$nuevoEstado] ?? 'Estado actualizado.');
+
 
         return redirect()->back();
     }
