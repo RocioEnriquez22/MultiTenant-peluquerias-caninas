@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
+import { useKanbanPermissions } from "@/hooks/use-kanban-permitions";
 import {
     CalendarIcon,
     Lock,
@@ -317,27 +318,7 @@ export default function TableroKanbanTurnos({
     onEditTurno,
     onRequestFinalizar,
 }: Props) {
-    const { auth } = usePage<{
-        auth: {
-            user: { id: string } | null;
-            roles?: string[];
-        };
-    }>().props;
-    const currentUserId = auth?.user?.id ?? null;
-    const esDueno = Boolean(
-        auth?.roles?.some((r) => r === "dueño_principal" || r === "dueño"),
-    );
-    const puedeGestionarTurno = (turno: TurnoDiarioItem): boolean => {
-        if (esDueno) return true;
-        if (
-            turno.estado === "en_proceso" &&
-            turno.realizado_por &&
-            turno.realizado_por.id !== currentUserId
-        ) {
-            return false;
-        }
-        return true;
-    };
+    const { puedeGestionarTurno } = useKanbanPermissions();
 
     const [columns, setColumns] = useState<Record<string, TurnoDiarioItem[]>>(
         () => agruparPorEstado(turnos),

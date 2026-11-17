@@ -41,6 +41,7 @@ class HandleInertiaRequests extends Middleware
         $tenantInitialized = tenancy()->initialized;
         $user = Auth::guard($tenantInitialized ? 'tenant' : 'web')->user();
         $tenantPermissions = null;
+        $tenantRoles = [];
 
         if ($tenantInitialized && $user instanceof TenantUser) {
             $tenantPermissions = $user->getAllPermissions()
@@ -52,12 +53,13 @@ class HandleInertiaRequests extends Middleware
                 ])
                 ->values()
                 ->all();
+            $tenantRoles = $user->getRoleNames()->values()->all();
         }
 
         if ($tenantInitialized && $user !== null) {
             $user = [
                 'id' => $user->getAuthIdentifier(),
-                'name' => trim($user->nombre.' '.($user->apellido ?? '')),
+                'name' => trim($user->nombre . ' ' . ($user->apellido ?? '')),
                 'email' => $user->email,
             ];
         }
@@ -70,6 +72,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'tenantPermissions' => $tenantPermissions,
+            'tenantRoles' => $tenantRoles,
         ];
     }
 }
