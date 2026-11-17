@@ -1,5 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
     ArrowUpRight,
     CalendarCheck,
@@ -8,13 +8,12 @@ import {
     PawPrint,
     Plus,
     Users,
+    TrendingUp,
 } from "lucide-react";
 import {
     Bar,
     BarChart,
     CartesianGrid,
-    Cell,
-    Legend,
     Pie,
     PieChart,
     ResponsiveContainer,
@@ -30,6 +29,7 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
+    CardFooter,
 } from "@/components/ui/card";
 import {
     Table,
@@ -39,6 +39,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import {
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+    type ChartConfig,
+} from "@/components/ui/chart";
 
 interface TenantInfo {
     id: string;
@@ -103,6 +109,13 @@ interface Props {
     ultimosTurnos?: UltimoTurnoItem[];
 }
 
+const CHART_COLORS = [
+    "var(--chart-1)",
+    "var(--chart-2)",
+    "var(--chart-3)",
+    "var(--chart-4)",
+    "var(--chart-5)",
+];
 const PIE_COLORS = ["#6366f1", "#10b981", "#f59e0b", "#64748b"];
 
 const formatARS = (valor: number) =>
@@ -138,6 +151,39 @@ export default function TenantDashboard({
         año: "Distribución de cobros realizados este año",
     };
 
+    const { pieChartData, pieChartConfig, totalCobradoPeriodo } =
+        useMemo(() => {
+            const config: ChartConfig = {
+                value: {
+                    label: "Ingresos",
+                },
+            };
+
+            let total = 0;
+
+            const data = datosPagoActuales.map((item, index) => {
+                const color = CHART_COLORS[index % CHART_COLORS.length];
+                config[item.name] = {
+                    label: item.name,
+                    color,
+                };
+
+                total += Number(item.value || 0);
+
+                return {
+                    name: item.name,
+                    value: Number(item.value || 0),
+                    fill: color,
+                };
+            });
+
+            return {
+                pieChartData: data,
+                pieChartConfig: config,
+                totalCobradoPeriodo: total,
+            };
+        }, [datosPagoActuales]);
+
     return (
         <>
             <Head title={`Dashboard - ${tenant.nombre}`} />
@@ -168,7 +214,7 @@ export default function TenantDashboard({
                     </div>
                 </div>
 
-                {/* Fila 1: 4 Tarjetas KPI */}
+                {/*4 Tarjetas con info general */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -249,7 +295,6 @@ export default function TenantDashboard({
                             <CardTitle>Servicios Más Solicitados</CardTitle>
                             <CardDescription>
                                 Cantidad histórica de turnos por servicio
-                                (Relación N:M)
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -305,12 +350,12 @@ export default function TenantDashboard({
                         </CardContent>
                     </Card>
 
-                    {/* Grafico piechart: Ingresos por Medio de Pago */}
+                    {/* Grafico piechart: Ingresos por Medio de Pago (sacado de shadcn) */}
                     <Card className="lg:col-span-3">
-                        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <CardHeader className="flex flex-col gap-3 pb-0 sm:flex-row sm:items-start sm:justify-between">
                             <div>
-                                <CardTitle>
-                                    Ingresos por Medio de Pago
+                                <CardTitle className="mb-2">
+                                    Ingresos segun metodos de pagos
                                 </CardTitle>
                                 <CardDescription>
                                     {subtituloPeriodo[periodoPago]}
@@ -318,7 +363,7 @@ export default function TenantDashboard({
                             </div>
 
                             {/* Botones Semana / Mes / Año */}
-                            <div className="inline-flex items-center rounded-lg border bg-muted/50 p-0.5 self-start">
+                            <div className="inline-flex items-center self-start rounded-lg border bg-muted/50 p-0.5">
                                 {(
                                     [
                                         { key: "semana", label: "Semana" },
@@ -345,57 +390,69 @@ export default function TenantDashboard({
                                 ))}
                             </div>
                         </CardHeader>
-                        <CardContent>
-                            {datosPagoActuales.length === 0 ? (
-                                <div className="flex h-72 items-center justify-center text-sm text-muted-foreground">
+
+                        <CardContent className="flex-1 pb-0">
+                            {pieChartData.length === 0 ? (
+                                <div className="flex h-[250px] items-center justify-center text-sm text-muted-foreground">
                                     Sin cobros registrados en el período
                                     seleccionado.
                                 </div>
                             ) : (
-                                <div className="h-72 w-full">
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height="100%"
-                                    >
-                                        <PieChart>
-                                            <Pie
-                                                data={datosPagoActuales}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={55}
-                                                outerRadius={80}
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                            >
-                                                {datosPagoActuales.map(
-                                                    (_, index) => (
-                                                        <Cell
-                                                            key={`cell-${index}`}
-                                                            fill={
-                                                                PIE_COLORS[
-                                                                    index %
-                                                                        PIE_COLORS.length
-                                                                ]
-                                                            }
-                                                        />
-                                                    ),
-                                                )}
-                                            </Pie>
-                                            <Tooltip
-                                                formatter={(value) =>
-                                                    formatARS(Number(value))
-                                                }
-                                            />
-                                            <Legend
-                                                verticalAlign="bottom"
-                                                height={36}
-                                                iconType="circle"
-                                            />
-                                        </PieChart>
-                                    </ResponsiveContainer>
-                                </div>
+                                <ChartContainer
+                                    config={pieChartConfig}
+                                    className="mx-auto w-full aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+                                >
+                                    <PieChart>
+                                        <ChartTooltip
+                                            content={
+                                                <ChartTooltipContent
+                                                    hideLabel
+                                                    formatter={(
+                                                        value,
+                                                        name,
+                                                    ) => (
+                                                        <div className="flex w-full items-center justify-between gap-4">
+                                                            <span className="text-muted-foreground">
+                                                                {String(name)}
+                                                            </span>
+                                                            <span className="font-mono font-semibold tabular-nums">
+                                                                {formatARS(
+                                                                    Number(
+                                                                        value,
+                                                                    ),
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                />
+                                            }
+                                        />
+                                        <Pie
+                                            data={pieChartData}
+                                            dataKey="value"
+                                            nameKey="name"
+                                            label={({ name }) => name}
+                                            outerRadius={70}
+                                        />
+                                    </PieChart>
+                                </ChartContainer>
                             )}
                         </CardContent>
+
+                        <CardFooter className="flex-col gap-2 text-sm pt-2">
+                            <div className="flex items-center gap-2 leading-none font-medium">
+                                Total cobrado: {formatARS(totalCobradoPeriodo)}{" "}
+                                <TrendingUp className="h-4 w-4 text-emerald-600" />
+                            </div>
+                            <div className="leading-none text-muted-foreground">
+                                Desglose por medio de cobro en{" "}
+                                {periodoPago === "semana"
+                                    ? "la semana actual"
+                                    : periodoPago === "mes"
+                                      ? "el mes actual"
+                                      : "el año en curso"}
+                            </div>
+                        </CardFooter>
                     </Card>
                 </div>
 

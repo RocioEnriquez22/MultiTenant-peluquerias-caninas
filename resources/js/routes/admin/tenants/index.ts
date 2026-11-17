@@ -137,7 +137,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
  * @see app/Http/Controllers/Admin/TenantController.php:103
  * @route '//localhost/admin/tenants/{tenant}'
  */
-export const update = (args: { tenant: string | { id: string } } | [tenant: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { tenant: string | number | { id: string | number } } | [tenant: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -152,7 +152,7 @@ update.definition = {
  * @see app/Http/Controllers/Admin/TenantController.php:103
  * @route '//localhost/admin/tenants/{tenant}'
  */
-update.url = (args: { tenant: string | { id: string } } | [tenant: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+update.url = (args: { tenant: string | number | { id: string | number } } | [tenant: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { tenant: args }
     }
@@ -185,7 +185,7 @@ update.url = (args: { tenant: string | { id: string } } | [tenant: string | { id
  * @see app/Http/Controllers/Admin/TenantController.php:103
  * @route '//localhost/admin/tenants/{tenant}'
  */
-update.put = (args: { tenant: string | { id: string } } | [tenant: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { tenant: string | number | { id: string | number } } | [tenant: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -195,7 +195,7 @@ update.put = (args: { tenant: string | { id: string } } | [tenant: string | { id
  * @see app/Http/Controllers/Admin/TenantController.php:103
  * @route '//localhost/admin/tenants/{tenant}'
  */
-    const updateForm = (args: { tenant: string | { id: string } } | [tenant: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const updateForm = (args: { tenant: string | number | { id: string | number } } | [tenant: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PUT',
@@ -210,7 +210,7 @@ update.put = (args: { tenant: string | { id: string } } | [tenant: string | { id
  * @see app/Http/Controllers/Admin/TenantController.php:103
  * @route '//localhost/admin/tenants/{tenant}'
  */
-        updateForm.put = (args: { tenant: string | { id: string } } | [tenant: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.put = (args: { tenant: string | number | { id: string | number } } | [tenant: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PUT',
@@ -226,7 +226,7 @@ update.put = (args: { tenant: string | { id: string } } | [tenant: string | { id
  * @see app/Http/Controllers/Admin/TenantController.php:81
  * @route '//localhost/admin/tenants/{tenant}/toggle'
  */
-export const toggle = (args: { tenant: string | { id: string } } | [tenant: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+export const toggle = (args: { tenant: string | number | { id: string | number } } | [tenant: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: toggle.url(args, options),
     method: 'patch',
 })
@@ -241,7 +241,7 @@ toggle.definition = {
  * @see app/Http/Controllers/Admin/TenantController.php:81
  * @route '//localhost/admin/tenants/{tenant}/toggle'
  */
-toggle.url = (args: { tenant: string | { id: string } } | [tenant: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+toggle.url = (args: { tenant: string | number | { id: string | number } } | [tenant: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { tenant: args }
     }
@@ -274,7 +274,7 @@ toggle.url = (args: { tenant: string | { id: string } } | [tenant: string | { id
  * @see app/Http/Controllers/Admin/TenantController.php:81
  * @route '//localhost/admin/tenants/{tenant}/toggle'
  */
-toggle.patch = (args: { tenant: string | { id: string } } | [tenant: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+toggle.patch = (args: { tenant: string | number | { id: string | number } } | [tenant: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: toggle.url(args, options),
     method: 'patch',
 })
@@ -284,7 +284,7 @@ toggle.patch = (args: { tenant: string | { id: string } } | [tenant: string | { 
  * @see app/Http/Controllers/Admin/TenantController.php:81
  * @route '//localhost/admin/tenants/{tenant}/toggle'
  */
-    const toggleForm = (args: { tenant: string | { id: string } } | [tenant: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const toggleForm = (args: { tenant: string | number | { id: string | number } } | [tenant: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: toggle.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PATCH',
@@ -299,7 +299,7 @@ toggle.patch = (args: { tenant: string | { id: string } } | [tenant: string | { 
  * @see app/Http/Controllers/Admin/TenantController.php:81
  * @route '//localhost/admin/tenants/{tenant}/toggle'
  */
-        toggleForm.patch = (args: { tenant: string | { id: string } } | [tenant: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        toggleForm.patch = (args: { tenant: string | number | { id: string | number } } | [tenant: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: toggle.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',
