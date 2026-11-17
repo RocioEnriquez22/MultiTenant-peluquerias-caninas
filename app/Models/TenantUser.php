@@ -34,4 +34,8 @@ class TenantUser extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function turnosRealizados()
+    {
+        return $this->hasMany(Turno::class, 'empleado_id');
+    }
 }

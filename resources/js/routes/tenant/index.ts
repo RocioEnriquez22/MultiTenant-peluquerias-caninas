@@ -265,7 +265,8 @@ authenticate.post = (args: { tenant: string | number } | [tenant: string | numbe
     
     authenticate.form = authenticateForm
 /**
- * @see routes/tenant.php:58
+* @see \App\Http\Controllers\Tenant\DashboardController::dashboard
+ * @see app/Http/Controllers/Tenant/DashboardController.php:18
  * @route '//{tenant}.localhost/dashboard'
  */
 export const dashboard = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -279,7 +280,8 @@ dashboard.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/tenant.php:58
+* @see \App\Http\Controllers\Tenant\DashboardController::dashboard
+ * @see app/Http/Controllers/Tenant/DashboardController.php:18
  * @route '//{tenant}.localhost/dashboard'
  */
 dashboard.url = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -306,7 +308,8 @@ dashboard.url = (args: { tenant: string | number } | [tenant: string | number ] 
 }
 
 /**
- * @see routes/tenant.php:58
+* @see \App\Http\Controllers\Tenant\DashboardController::dashboard
+ * @see app/Http/Controllers/Tenant/DashboardController.php:18
  * @route '//{tenant}.localhost/dashboard'
  */
 dashboard.get = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -314,7 +317,8 @@ dashboard.get = (args: { tenant: string | number } | [tenant: string | number ] 
     method: 'get',
 })
 /**
- * @see routes/tenant.php:58
+* @see \App\Http\Controllers\Tenant\DashboardController::dashboard
+ * @see app/Http/Controllers/Tenant/DashboardController.php:18
  * @route '//{tenant}.localhost/dashboard'
  */
 dashboard.head = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -323,7 +327,8 @@ dashboard.head = (args: { tenant: string | number } | [tenant: string | number ]
 })
 
     /**
- * @see routes/tenant.php:58
+* @see \App\Http\Controllers\Tenant\DashboardController::dashboard
+ * @see app/Http/Controllers/Tenant/DashboardController.php:18
  * @route '//{tenant}.localhost/dashboard'
  */
     const dashboardForm = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -332,7 +337,8 @@ dashboard.head = (args: { tenant: string | number } | [tenant: string | number ]
     })
 
             /**
- * @see routes/tenant.php:58
+* @see \App\Http\Controllers\Tenant\DashboardController::dashboard
+ * @see app/Http/Controllers/Tenant/DashboardController.php:18
  * @route '//{tenant}.localhost/dashboard'
  */
         dashboardForm.get = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -340,7 +346,8 @@ dashboard.head = (args: { tenant: string | number } | [tenant: string | number ]
             method: 'get',
         })
             /**
- * @see routes/tenant.php:58
+* @see \App\Http\Controllers\Tenant\DashboardController::dashboard
+ * @see app/Http/Controllers/Tenant/DashboardController.php:18
  * @route '//{tenant}.localhost/dashboard'
  */
         dashboardForm.head = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

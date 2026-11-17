@@ -13,7 +13,7 @@ use App\Http\Controllers\Tenant\TenantUserPermissionController;
 use App\Http\Controllers\Tenant\TurnoController;
 use App\Http\Middleware\EnsureTenantIsActive;
 use App\Http\Controllers\Tenant\ServicioController;
-
+use App\Http\Controllers\Tenant\DashboardController;
 use App\Http\Controllers\Tenant\ClienteController;
 use App\Http\Controllers\Tenant\MascotaController;
 
@@ -55,15 +55,9 @@ Route::domain('{tenant}.' . config('app.central_domain', 'localhost'))
 
         Route::middleware([EnsureTenantIsActive::class, 'auth:tenant',])->group(function () {
             //Dashboard del Tenant
-            Route::get('/dashboard', function () {
-                return Inertia::render('tenant/dashboard', [
-                    'tenant' => [
-                        'id' => tenant('id'),
-                        'nombre' => tenant('nombre_comercial'),
-                        'dueño' => tenant('nombre_dueño'),
-                    ],
-                ]);
-            })->middleware('can:dashboard.view')->name('tenant.dashboard');
+            Route::get('/dashboard', [DashboardController::class, 'index'])
+                ->middleware('can:dashboard.view')
+                ->name('tenant.dashboard');
 
             //rutas para gestionar los users
             Route::middleware(['permission:gestionar.users'])->group(function () {
