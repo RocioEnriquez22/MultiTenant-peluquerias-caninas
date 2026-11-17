@@ -59,8 +59,12 @@ class TurnoFactory extends Factory
             'cancelado',
         ]);
 
+        $enProceso = $estado === 'en_proceso';
         $esListo = $estado === 'listo';
-        $empleado = $esListo ? TenantUser::query()->inRandomOrder()->first() : null;
+        $empleado = null;
+        if ($enProceso || $esListo) {
+            $empleado = TenantUser::query()->inRandomOrder()->first();
+        }
 
         $notasPosibles = [
             'Corte higiénico y despeje de ojos.',

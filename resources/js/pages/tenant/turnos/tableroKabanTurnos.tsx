@@ -32,6 +32,7 @@ import {
     KanbanOverlay,
     type KanbanMoveEvent,
 } from "@/components/ui/kanban";
+import { ScrollToBottomButton } from "@/components/ui/button-scroll";
 import { cn } from "@/lib/utils";
 import { EstadoTurno, TurnoDiarioItem } from "@/types/turnos";
 
@@ -387,111 +388,113 @@ export default function TableroKanbanTurnos({
     };
 
     return (
-        <div className="overflow-x-auto pb-2">
-            <Kanban
-                value={columns}
-                onValueChange={setColumns}
-                onMove={handleMove}
-                getItemValue={(item) => item.id}
-                className="w-full"
-            >
-                <KanbanBoard className="flex flex-col md:grid md:auto-rows-fr md:grid-cols-4 gap-4 w-full">
-                    {ORDEN_COLUMNAS.map((estado) => {
-                        const meta = COLUMN_CONFIG[estado];
-                        const items = columns[estado] || [];
-                        const countFormatted = String(items.length).padStart(
-                            2,
-                            "0",
-                        );
+        <>
+            <div className="overflow-x-auto pb-2">
+                <Kanban
+                    value={columns}
+                    onValueChange={setColumns}
+                    onMove={handleMove}
+                    getItemValue={(item) => item.id}
+                    className="w-full"
+                >
+                    <KanbanBoard className="flex flex-col md:grid md:auto-rows-fr md:grid-cols-4 gap-4 w-full">
+                        {ORDEN_COLUMNAS.map((estado) => {
+                            const meta = COLUMN_CONFIG[estado];
+                            const items = columns[estado] || [];
+                            const countFormatted = String(
+                                items.length,
+                            ).padStart(2, "0");
 
-                        return (
-                            <KanbanColumn key={estado} value={estado}>
-                                <div
-                                    className={cn(
-                                        "flex h-full min-h-[140px] md:min-h-[420px] flex-col rounded-2xl border p-3.5 transition-colors",
-                                        meta.containerClass,
-                                    )}
-                                >
-                                    <div className="flex items-center gap-2 px-1 pb-3.5">
-                                        <span
-                                            className={cn(
-                                                "size-2 rounded-full",
-                                                meta.dotClass,
-                                            )}
-                                        />
-                                        <h3
-                                            className={cn(
-                                                "text-sm font-semibold",
-                                                meta.titleClass,
-                                            )}
-                                        >
-                                            {meta.title}
-                                        </h3>
-                                        <span
-                                            className={cn(
-                                                "rounded-full border px-2 py-0.5 text-[11px] font-semibold tabular-nums",
-                                                meta.badgeClass,
-                                            )}
-                                        >
-                                            {countFormatted}
-                                        </span>
-                                    </div>
-
-                                    {/* Lista de tarjetas arrastrables */}
-                                    <KanbanColumnContent
-                                        value={estado}
-                                        className="flex-1 flex-row overflow-x-auto pb-1.5 md:flex-col md:overflow-visible md:pb-0 gap-3"
+                            return (
+                                <KanbanColumn key={estado} value={estado}>
+                                    <div
+                                        className={cn(
+                                            "flex h-full min-h-[140px] md:min-h-[420px] flex-col rounded-2xl border p-3.5 transition-colors",
+                                            meta.containerClass,
+                                        )}
                                     >
-                                        {items.map((turno) => (
-                                            <TurnoCard
-                                                key={turno.id}
-                                                turno={turno}
-                                                puedeGestionar={puedeGestionarTurno(
-                                                    turno,
+                                        <div className="flex items-center gap-2 px-1 pb-3.5">
+                                            <span
+                                                className={cn(
+                                                    "size-2 rounded-full",
+                                                    meta.dotClass,
                                                 )}
-                                                onEdit={onEditTurno}
-                                                onRequestFinalizar={
-                                                    onRequestFinalizar
-                                                }
-                                                onLiberarTurno={
-                                                    handleLiberarTurno
-                                                }
                                             />
-                                        ))}
-                                    </KanbanColumnContent>
+                                            <h3
+                                                className={cn(
+                                                    "text-sm font-semibold",
+                                                    meta.titleClass,
+                                                )}
+                                            >
+                                                {meta.title}
+                                            </h3>
+                                            <span
+                                                className={cn(
+                                                    "rounded-full border px-2 py-0.5 text-[11px] font-semibold tabular-nums",
+                                                    meta.badgeClass,
+                                                )}
+                                            >
+                                                {countFormatted}
+                                            </span>
+                                        </div>
 
-                                    {estado === "pendiente" && (
-                                        <Button
-                                            variant="secondary"
-                                            onClick={() =>
-                                                onOpenNewTurno(
-                                                    fechaSeleccionada,
-                                                )
-                                            }
-                                            className="pointer mt-3 flex items-center justify-start md:justify-center  gap-1.5 px-1 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors"
+                                        {/* Lista de tarjetas arrastrables */}
+                                        <KanbanColumnContent
+                                            value={estado}
+                                            className="flex-1 flex-row overflow-x-auto pb-1.5 md:flex-col md:overflow-visible md:pb-0 gap-3"
                                         >
-                                            <Plus className="size-3.5" />
-                                            Agregar turno
-                                        </Button>
-                                    )}
-                                </div>
-                            </KanbanColumn>
-                        );
-                    })}
-                </KanbanBoard>
+                                            {items.map((turno) => (
+                                                <TurnoCard
+                                                    key={turno.id}
+                                                    turno={turno}
+                                                    puedeGestionar={puedeGestionarTurno(
+                                                        turno,
+                                                    )}
+                                                    onEdit={onEditTurno}
+                                                    onRequestFinalizar={
+                                                        onRequestFinalizar
+                                                    }
+                                                    onLiberarTurno={
+                                                        handleLiberarTurno
+                                                    }
+                                                />
+                                            ))}
+                                        </KanbanColumnContent>
 
-                <KanbanOverlay>
-                    {({ value, variant }) => {
-                        if (variant === "column") return null;
-                        const turno = Object.values(columns)
-                            .flat()
-                            .find((t) => t.id === String(value));
-                        return turno ? (
-                            <TurnoCard turno={turno} isOverlay />
-                        ) : null;
-                    }}
-                </KanbanOverlay>
-            </Kanban>
-        </div>
+                                        {estado === "pendiente" && (
+                                            <Button
+                                                variant="secondary"
+                                                onClick={() =>
+                                                    onOpenNewTurno(
+                                                        fechaSeleccionada,
+                                                    )
+                                                }
+                                                className="pointer mt-3 flex items-center justify-start md:justify-center  gap-1.5 px-1 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors"
+                                            >
+                                                <Plus className="size-3.5" />
+                                                Agregar turno
+                                            </Button>
+                                        )}
+                                    </div>
+                                </KanbanColumn>
+                            );
+                        })}
+                    </KanbanBoard>
+
+                    <KanbanOverlay>
+                        {({ value, variant }) => {
+                            if (variant === "column") return null;
+                            const turno = Object.values(columns)
+                                .flat()
+                                .find((t) => t.id === String(value));
+                            return turno ? (
+                                <TurnoCard turno={turno} isOverlay />
+                            ) : null;
+                        }}
+                    </KanbanOverlay>
+                </Kanban>
+            </div>
+            <ScrollToBottomButton />
+        </>
     );
 }

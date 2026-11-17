@@ -17,6 +17,10 @@ class DashboardController extends Controller
 
     public function index(): Response
     {
+        $currentUser = auth('tenant')->user();
+        $isOwner = $currentUser instanceof TenantUser
+            && $currentUser->hasRole(['dueño_principal', 'dueño'], 'tenant');
+
         $inicioMes = now()->startOfMonth()->toDateString();
         $finMes = now()->endOfMonth()->toDateString();
         $hoy = now()->toDateString();
@@ -59,8 +63,8 @@ class DashboardController extends Controller
 
 
         $metrics = [
-            'ingresos_mes' => $ingresoMes,
-            'ingresos_hoy' => $ingresoHoy,
+            'ingresos_mes' => $isOwner ? $ingresoMes : null,
+            'ingresos_hoy' => $isOwner ? $ingresoHoy : null,
             'turnos_mes' => $turnosMes,
             'turnos_hoy' => $turnosHoy,
             'clientes_activos' => Cliente::where('activo', true)->count(),
@@ -133,7 +137,7 @@ class DashboardController extends Controller
                 'id' => $emp->id,
                 'nombre' => trim($emp->nombre . ' ' . ($emp->apellido ?? '')),
                 'turnos_count' => (int) $emp->turnos_realizados_count,
-                'total_facturado' => (float) ($emp->total_facturado ?? 0),
+                'total_facturado' => $isOwner ? (float) ($emp->total_facturado ?? 0) : null,
             ]);
 
         //tabla de los ultimos 6 turnos finalizados
@@ -166,7 +170,9 @@ class DashboardController extends Controller
             ],
             'metrics' => $metrics,
             'serviciosSolicitados' => $serviciosSolicitados,
-            'ingresosPorMetodo' => $ingresosPorMetodo,
+            'ingresosPorMetodo' => $isOwner
+                ? $ingresosPorMetodo
+                : ['semana' => [], 'mes' => [], 'año' => []],
             'rendimientoEquipo' => $rendimientoEquipo,
             'ultimosTurnos' => $ultimosTurnos,
         ]);

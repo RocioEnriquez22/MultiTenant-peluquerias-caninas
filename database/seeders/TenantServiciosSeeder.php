@@ -21,8 +21,26 @@ class TenantServiciosSeeder extends Seeder
             DB::table('servicios')->insert([
                 'id' => (string) Str::uuid(),
                 'nombre' => 'Servicio general',
-                'descripcion' => null,
-                'precio' => 0,
+                'descripcion' => 'Baño + corte',
+                'precio' => 15000,
+                'activo' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            DB::table('servicios')->insert([
+                'id' => (string) Str::uuid(),
+                'nombre' => 'Baño',
+                'descripcion' => 'con shampoo antiparasitario + limpieza de oídos.',
+                'precio' => 8000,
+                'activo' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            DB::table('servicios')->insert([
+                'id' => (string) Str::uuid(),
+                'nombre' => 'Corte',
+                'descripcion' => 'solo corte de mantenimiento del pelo.',
+                'precio' => 6000,
                 'activo' => true,
                 'created_at' => now(),
                 'updated_at' => now(),

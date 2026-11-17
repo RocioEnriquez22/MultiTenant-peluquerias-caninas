@@ -10,17 +10,7 @@ import {
     Users,
     TrendingUp,
 } from "lucide-react";
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Pie,
-    PieChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, Pie, PieChart, XAxis } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,6 +35,8 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from "@/components/ui/chart";
+import { useKanbanPermissions } from "@/hooks/use-kanban-permitions";
+import { ScrollToBottomButton } from "@/components/ui/button-scroll";
 
 interface TenantInfo {
     id: string;
@@ -109,14 +101,7 @@ interface Props {
     ultimosTurnos?: UltimoTurnoItem[];
 }
 
-const CHART_COLORS = [
-    "var(--chart-1)",
-    "var(--chart-2)",
-    "var(--chart-3)",
-    "var(--chart-4)",
-    "var(--chart-5)",
-];
-const PIE_COLORS = ["#6366f1", "#10b981", "#f59e0b", "#64748b"];
+const PIE_COLORS = ["#10ad79a8", "#6a6cefa2", "#f5ab2da3", "#64748ba2"];
 
 const formatARS = (valor: number) =>
     new Intl.NumberFormat("es-AR", {
@@ -144,6 +129,8 @@ export default function TenantDashboard({
 }: Props) {
     const [periodoPago, setPeriodoPago] = useState<PeriodoPago>("mes");
     const datosPagoActuales = ingresosPorMetodo[periodoPago] ?? [];
+    const { isOwner } = useKanbanPermissions();
+    const [periodoTurnos, setPeriodoTurnos] = useState<"hoy" | "mes">("mes");
 
     const subtituloPeriodo: Record<PeriodoPago, string> = {
         semana: "Distribución de cobros realizados esta semana",
@@ -162,7 +149,7 @@ export default function TenantDashboard({
             let total = 0;
 
             const data = datosPagoActuales.map((item, index) => {
-                const color = CHART_COLORS[index % CHART_COLORS.length];
+                const color = PIE_COLORS[index % PIE_COLORS.length];
                 config[item.name] = {
                     label: item.name,
                     color,
@@ -183,6 +170,12 @@ export default function TenantDashboard({
                 totalCobradoPeriodo: total,
             };
         }, [datosPagoActuales]);
+    const serviciosChartConfig = {
+        cantidad: {
+            label: "Turnos",
+            color: "#f59f0bb8",
+        },
+    } satisfies ChartConfig;
 
     return (
         <>
@@ -215,37 +208,76 @@ export default function TenantDashboard({
                 </div>
 
                 {/*4 Tarjetas con info general */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Ingresos del Mes
-                            </CardTitle>
-                            <DollarSign className="h-4 w-4 text-emerald-600" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">
-                                {formatARS(metrics.ingresos_mes)}
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                                Hoy: {formatARS(metrics.ingresos_hoy)} cobrados
-                            </p>
-                        </CardContent>
-                    </Card>
+                <div
+                    className={
+                        isOwner
+                            ? "grid  gap-4 grid-cols-2 lg:grid-cols-4"
+                            : "grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+                    }
+                >
+                    {isOwner && (
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">
+                                    Ingresos del Mes
+                                </CardTitle>
+                                <DollarSign className="h-4 w-4 text-emerald-600" />
+                            </CardHeader>
+                            <CardContent className="text-center">
+                                <div className="text-2xl font-bold">
+                                    {formatARS(metrics.ingresos_mes)}
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                    Hoy: {formatARS(metrics.ingresos_hoy)}{" "}
+                                    cobrados
+                                </p>
+                            </CardContent>
+                        </Card>
+                    )}
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Turnos del Mes
+                            <CardTitle className="flex flex-row justify-end text-sm font-medium ">
+                                {periodoTurnos === "hoy"
+                                    ? "Turnos de Hoy"
+                                    : "Turnos del Mes"}
+                                <CalendarCheck className="h-4 w-4 text-indigo-600 inline ml-3" />
                             </CardTitle>
-                            <CalendarCheck className="h-4 w-4 text-indigo-600" />
+                            <div className="relative top-0 rigth-0 inline-flex items-center rounded-md border bg-muted/50 p-0.5">
+                                <button
+                                    type="button"
+                                    onClick={() => setPeriodoTurnos("hoy")}
+                                    className={`rounded px-2 py-0.5 text-[11px] font-medium transition-colors ${
+                                        periodoTurnos === "hoy"
+                                            ? "bg-background text-foreground shadow-xs"
+                                            : "text-muted-foreground hover:text-foreground"
+                                    }`}
+                                >
+                                    Hoy
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setPeriodoTurnos("mes")}
+                                    className={`rounded px-2 py-0.5 text-[11px] font-medium transition-colors ${
+                                        periodoTurnos === "mes"
+                                            ? "bg-background text-foreground shadow-xs"
+                                            : "text-muted-foreground hover:text-foreground"
+                                    }`}
+                                >
+                                    Mes
+                                </button>
+                            </div>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="text-center">
                             <div className="text-2xl font-bold">
-                                {metrics.turnos_mes}
+                                {periodoTurnos === "hoy"
+                                    ? metrics.turnos_hoy
+                                    : metrics.turnos_mes}
                             </div>
                             <p className="text-xs text-muted-foreground">
-                                {metrics.turnos_hoy} agendados para hoy
+                                {periodoTurnos === "hoy"
+                                    ? `${metrics.turnos_mes} agendados en todo el mes`
+                                    : `${metrics.turnos_hoy} agendados para hoy`}
                             </p>
                         </CardContent>
                     </Card>
@@ -257,7 +289,7 @@ export default function TenantDashboard({
                             </CardTitle>
                             <PawPrint className="h-4 w-4 text-amber-600" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="text-center">
                             <div className="text-2xl font-bold">
                                 {metrics.clientes_activos} clientes
                             </div>
@@ -275,7 +307,7 @@ export default function TenantDashboard({
                             </CardTitle>
                             <CheckCircle2 className="h-4 w-4 text-sky-600" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="text-center">
                             <div className="text-2xl font-bold">
                                 {metrics.tasa_asistencia}%
                             </div>
@@ -290,7 +322,9 @@ export default function TenantDashboard({
                 {/*Graficos Recharts (Barras + Dona) */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                     {/* Grafico de Barras: Servicios más solicitados */}
-                    <Card className="lg:col-span-4">
+                    <Card
+                        className={isOwner ? "lg:col-span-4" : "lg:col-span-7"}
+                    >
                         <CardHeader>
                             <CardTitle>Servicios Más Solicitados</CardTitle>
                             <CardDescription>
@@ -303,157 +337,169 @@ export default function TenantDashboard({
                                     Aún no hay servicios asociados a turnos.
                                 </div>
                             ) : (
-                                <div className="h-72 w-full">
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height="100%"
-                                    >
-                                        <BarChart
-                                            data={serviciosSolicitados}
-                                            margin={{
-                                                top: 10,
-                                                right: 10,
-                                                left: -15,
-                                                bottom: 0,
-                                            }}
-                                        >
-                                            <CartesianGrid
-                                                strokeDasharray="3 3"
-                                                className="stroke-muted"
-                                            />
-                                            <XAxis
-                                                dataKey="name"
-                                                fontSize={12}
-                                                tickLine={false}
-                                            />
-                                            <YAxis
-                                                fontSize={12}
-                                                allowDecimals={false}
-                                                tickLine={false}
-                                            />
-                                            <Tooltip
-                                                formatter={(value) => [
-                                                    `${value} turnos`,
-                                                    "Solicitudes",
-                                                ]}
-                                            />
-                                            <Bar
-                                                dataKey="cantidad"
-                                                fill="#6366f1"
-                                                radius={[4, 4, 0, 0]}
-                                                name="Turnos"
-                                            />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Grafico piechart: Ingresos por Medio de Pago (sacado de shadcn) */}
-                    <Card className="lg:col-span-3">
-                        <CardHeader className="flex flex-col gap-3 pb-0 sm:flex-row sm:items-start sm:justify-between">
-                            <div>
-                                <CardTitle className="mb-2">
-                                    Ingresos segun metodos de pagos
-                                </CardTitle>
-                                <CardDescription>
-                                    {subtituloPeriodo[periodoPago]}
-                                </CardDescription>
-                            </div>
-
-                            {/* Botones Semana / Mes / Año */}
-                            <div className="inline-flex items-center self-start rounded-lg border bg-muted/50 p-0.5">
-                                {(
-                                    [
-                                        { key: "semana", label: "Semana" },
-                                        { key: "mes", label: "Mes" },
-                                        { key: "año", label: "Año" },
-                                    ] as const
-                                ).map((opcion) => (
-                                    <Button
-                                        key={opcion.key}
-                                        type="button"
-                                        size="sm"
-                                        variant={
-                                            periodoPago === opcion.key
-                                                ? "secondary"
-                                                : "ghost"
-                                        }
-                                        onClick={() =>
-                                            setPeriodoPago(opcion.key)
-                                        }
-                                        className="h-7 px-2.5 text-xs font-medium"
-                                    >
-                                        {opcion.label}
-                                    </Button>
-                                ))}
-                            </div>
-                        </CardHeader>
-
-                        <CardContent className="flex-1 pb-0">
-                            {pieChartData.length === 0 ? (
-                                <div className="flex h-[250px] items-center justify-center text-sm text-muted-foreground">
-                                    Sin cobros registrados en el período
-                                    seleccionado.
-                                </div>
-                            ) : (
                                 <ChartContainer
-                                    config={pieChartConfig}
-                                    className="mx-auto w-full aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+                                    config={serviciosChartConfig}
+                                    className="max-h-72 w-full"
                                 >
-                                    <PieChart>
+                                    <BarChart
+                                        accessibilityLayer
+                                        data={serviciosSolicitados}
+                                    >
+                                        <CartesianGrid vertical={false} />
+                                        <XAxis
+                                            dataKey="name"
+                                            tickLine={false}
+                                            tickMargin={10}
+                                            axisLine={false}
+                                            tickFormatter={(value: string) =>
+                                                value.length > 14
+                                                    ? `${value.slice(0, 14)}…`
+                                                    : value
+                                            }
+                                        />
                                         <ChartTooltip
+                                            cursor={false}
                                             content={
                                                 <ChartTooltipContent
                                                     hideLabel
-                                                    formatter={(
-                                                        value,
-                                                        name,
-                                                    ) => (
-                                                        <div className="flex w-full items-center justify-between gap-4">
-                                                            <span className="text-muted-foreground">
-                                                                {String(name)}
-                                                            </span>
-                                                            <span className="font-mono font-semibold tabular-nums">
-                                                                {formatARS(
-                                                                    Number(
-                                                                        value,
-                                                                    ),
-                                                                )}
-                                                            </span>
-                                                        </div>
-                                                    )}
                                                 />
                                             }
                                         />
-                                        <Pie
-                                            data={pieChartData}
-                                            dataKey="value"
-                                            nameKey="name"
-                                            label={({ name }) => name}
-                                            outerRadius={70}
+                                        <Bar
+                                            dataKey="cantidad"
+                                            fill="var(--color-cantidad)"
+                                            radius={8}
+                                            barSize={50}
                                         />
-                                    </PieChart>
+                                    </BarChart>
                                 </ChartContainer>
                             )}
                         </CardContent>
-
-                        <CardFooter className="flex-col gap-2 text-sm pt-2">
-                            <div className="flex items-center gap-2 leading-none font-medium">
-                                Total cobrado: {formatARS(totalCobradoPeriodo)}{" "}
-                                <TrendingUp className="h-4 w-4 text-emerald-600" />
-                            </div>
-                            <div className="leading-none text-muted-foreground">
-                                Desglose por medio de cobro en{" "}
-                                {periodoPago === "semana"
-                                    ? "la semana actual"
-                                    : periodoPago === "mes"
-                                      ? "el mes actual"
-                                      : "el año en curso"}
-                            </div>
-                        </CardFooter>
+                        {serviciosSolicitados.length > 0 && (
+                            <CardFooter className="flex-col items-center gap-2 text-sm">
+                                <div className="flex gap-2 leading-none font-medium">
+                                    Servicio líder:{" "}
+                                    {serviciosSolicitados[0].name} (
+                                    {serviciosSolicitados[0].cantidad} turnos){" "}
+                                    <TrendingUp className="h-4 w-4 text-emerald-600" />
+                                </div>
+                                <div className="leading-none text-muted-foreground">
+                                    Mostrando los {serviciosSolicitados.length}{" "}
+                                    servicios más solicitados
+                                </div>
+                            </CardFooter>
+                        )}
                     </Card>
+
+                    {/* Grafico piechart: Ingresos por Medio de Pago (sacado de shadcn) */}
+                    {isOwner && (
+                        <Card className="lg:col-span-3">
+                            <CardHeader className="flex flex-col gap-3 pb-0 sm:flex-row sm:items-start sm:justify-between">
+                                <div>
+                                    <CardTitle className="mb-2">
+                                        Ingresos segun metodos de pagos
+                                    </CardTitle>
+                                    <CardDescription>
+                                        {subtituloPeriodo[periodoPago]}
+                                    </CardDescription>
+                                </div>
+
+                                {/* Botones Semana / Mes / Año */}
+                                <div className="inline-flex items-center self-start rounded-lg border bg-muted/50 p-0.5">
+                                    {(
+                                        [
+                                            { key: "semana", label: "Semana" },
+                                            { key: "mes", label: "Mes" },
+                                            { key: "año", label: "Año" },
+                                        ] as const
+                                    ).map((opcion) => (
+                                        <Button
+                                            key={opcion.key}
+                                            type="button"
+                                            size="sm"
+                                            variant={
+                                                periodoPago === opcion.key
+                                                    ? "secondary"
+                                                    : "ghost"
+                                            }
+                                            onClick={() =>
+                                                setPeriodoPago(opcion.key)
+                                            }
+                                            className="h-7 px-2.5 text-xs font-medium"
+                                        >
+                                            {opcion.label}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </CardHeader>
+
+                            <CardContent className="flex-1 pb-0">
+                                {pieChartData.length === 0 ? (
+                                    <div className="flex h-[250px] items-center justify-center text-sm text-muted-foreground">
+                                        Sin cobros registrados en el período
+                                        seleccionado.
+                                    </div>
+                                ) : (
+                                    <ChartContainer
+                                        config={pieChartConfig}
+                                        className="mx-auto w-full aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+                                    >
+                                        <PieChart>
+                                            <ChartTooltip
+                                                content={
+                                                    <ChartTooltipContent
+                                                        hideLabel
+                                                        formatter={(
+                                                            value,
+                                                            name,
+                                                        ) => (
+                                                            <div className="flex w-full items-center justify-between gap-4">
+                                                                <span className="text-muted-foreground">
+                                                                    {String(
+                                                                        name,
+                                                                    )}
+                                                                </span>
+                                                                <span className="font-mono font-semibold tabular-nums">
+                                                                    {formatARS(
+                                                                        Number(
+                                                                            value,
+                                                                        ),
+                                                                    )}
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                    />
+                                                }
+                                            />
+                                            <Pie
+                                                data={pieChartData}
+                                                dataKey="value"
+                                                nameKey="name"
+                                                label={({ name }) => name}
+                                                outerRadius={70}
+                                            />
+                                        </PieChart>
+                                    </ChartContainer>
+                                )}
+                            </CardContent>
+
+                            <CardFooter className="flex-col gap-2 text-sm pt-2">
+                                <div className="flex items-center gap-2 leading-none font-medium">
+                                    Total cobrado:{" "}
+                                    {formatARS(totalCobradoPeriodo)}{" "}
+                                    <TrendingUp className="h-4 w-4 text-emerald-600" />
+                                </div>
+                                <div className="leading-none text-muted-foreground">
+                                    Desglose por medio de cobro en{" "}
+                                    {periodoPago === "semana"
+                                        ? "la semana actual"
+                                        : periodoPago === "mes"
+                                          ? "el mes actual"
+                                          : "el año en curso"}
+                                </div>
+                            </CardFooter>
+                        </Card>
+                    )}
                 </div>
 
                 {/* Tablas Relacionales */}
@@ -479,9 +525,11 @@ export default function TenantDashboard({
                                         <TableHead className="text-center">
                                             Turnos
                                         </TableHead>
-                                        <TableHead className="text-right">
-                                            Facturado
-                                        </TableHead>
+                                        {isOwner && (
+                                            <TableHead className="text-right">
+                                                Facturado
+                                            </TableHead>
+                                        )}
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -505,11 +553,13 @@ export default function TenantDashboard({
                                                         {emp.turnos_count}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="text-right font-medium tabular-nums">
-                                                    {formatARS(
-                                                        emp.total_facturado,
-                                                    )}
-                                                </TableCell>
+                                                {isOwner && (
+                                                    <TableCell className="text-right font-medium tabular-nums">
+                                                        {formatARS(
+                                                            emp.total_facturado,
+                                                        )}
+                                                    </TableCell>
+                                                )}
                                             </TableRow>
                                         ))
                                     )}
@@ -612,6 +662,7 @@ export default function TenantDashboard({
                     </Card>
                 </div>
             </div>
+            <ScrollToBottomButton />
         </>
     );
 }

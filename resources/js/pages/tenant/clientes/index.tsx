@@ -4,6 +4,7 @@ import ClienteFormModal from "./clienteFormModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ScrollToBottomButton } from "@/components/ui/button-scroll";
 import {
     Table,
     TableBody,
@@ -373,7 +374,7 @@ export default function ClientesIndex({
                     </div>
 
                     {/* Botones de Acción */}
-                    <div className="lg:col-span-2 flex gap-2">
+                    <div className="lg:col-span-2 flex wrap gap-2">
                         <Button
                             type="submit"
                             className="w-full bg-indigo-600 hover:bg-indigo-700"
@@ -1006,6 +1007,7 @@ export default function ClientesIndex({
                     tenantId={tenantId}
                 />
             </div>
+            <ScrollToBottomButton />
         </>
     );
 }
