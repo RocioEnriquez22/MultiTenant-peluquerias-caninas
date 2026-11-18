@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::toggle
- * @see app/Http/Controllers/Tenant/ServicioController.php:79
+ * @see app/Http/Controllers/Tenant/ServicioController.php:84
  * @route '//{tenant}.localhost/servicios/{id}/toggle'
  */
 export const toggle = (args: { tenant: string | number, id: string | number } | [tenant: string | number, id: string | number ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -16,7 +16,7 @@ toggle.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::toggle
- * @see app/Http/Controllers/Tenant/ServicioController.php:79
+ * @see app/Http/Controllers/Tenant/ServicioController.php:84
  * @route '//{tenant}.localhost/servicios/{id}/toggle'
  */
 toggle.url = (args: { tenant: string | number, id: string | number } | [tenant: string | number, id: string | number ], options?: RouteQueryOptions) => {
@@ -42,7 +42,7 @@ toggle.url = (args: { tenant: string | number, id: string | number } | [tenant: 
 
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::toggle
- * @see app/Http/Controllers/Tenant/ServicioController.php:79
+ * @see app/Http/Controllers/Tenant/ServicioController.php:84
  * @route '//{tenant}.localhost/servicios/{id}/toggle'
  */
 toggle.patch = (args: { tenant: string | number, id: string | number } | [tenant: string | number, id: string | number ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -52,7 +52,7 @@ toggle.patch = (args: { tenant: string | number, id: string | number } | [tenant
 
     /**
 * @see \App\Http\Controllers\Tenant\ServicioController::toggle
- * @see app/Http/Controllers/Tenant/ServicioController.php:79
+ * @see app/Http/Controllers/Tenant/ServicioController.php:84
  * @route '//{tenant}.localhost/servicios/{id}/toggle'
  */
     const toggleForm = (args: { tenant: string | number, id: string | number } | [tenant: string | number, id: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -67,7 +67,7 @@ toggle.patch = (args: { tenant: string | number, id: string | number } | [tenant
 
             /**
 * @see \App\Http\Controllers\Tenant\ServicioController::toggle
- * @see app/Http/Controllers/Tenant/ServicioController.php:79
+ * @see app/Http/Controllers/Tenant/ServicioController.php:84
  * @route '//{tenant}.localhost/servicios/{id}/toggle'
  */
         toggleForm.patch = (args: { tenant: string | number, id: string | number } | [tenant: string | number, id: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -83,7 +83,7 @@ toggle.patch = (args: { tenant: string | number, id: string | number } | [tenant
     toggle.form = toggleForm
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::index
- * @see app/Http/Controllers/Tenant/ServicioController.php:19
+ * @see app/Http/Controllers/Tenant/ServicioController.php:21
  * @route '//{tenant}.localhost/servicios'
  */
 export const index = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -98,7 +98,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::index
- * @see app/Http/Controllers/Tenant/ServicioController.php:19
+ * @see app/Http/Controllers/Tenant/ServicioController.php:21
  * @route '//{tenant}.localhost/servicios'
  */
 index.url = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -126,7 +126,7 @@ index.url = (args: { tenant: string | number } | [tenant: string | number ] | st
 
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::index
- * @see app/Http/Controllers/Tenant/ServicioController.php:19
+ * @see app/Http/Controllers/Tenant/ServicioController.php:21
  * @route '//{tenant}.localhost/servicios'
  */
 index.get = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -135,7 +135,7 @@ index.get = (args: { tenant: string | number } | [tenant: string | number ] | st
 })
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::index
- * @see app/Http/Controllers/Tenant/ServicioController.php:19
+ * @see app/Http/Controllers/Tenant/ServicioController.php:21
  * @route '//{tenant}.localhost/servicios'
  */
 index.head = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -145,7 +145,7 @@ index.head = (args: { tenant: string | number } | [tenant: string | number ] | s
 
     /**
 * @see \App\Http\Controllers\Tenant\ServicioController::index
- * @see app/Http/Controllers/Tenant/ServicioController.php:19
+ * @see app/Http/Controllers/Tenant/ServicioController.php:21
  * @route '//{tenant}.localhost/servicios'
  */
     const indexForm = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -155,7 +155,7 @@ index.head = (args: { tenant: string | number } | [tenant: string | number ] | s
 
             /**
 * @see \App\Http\Controllers\Tenant\ServicioController::index
- * @see app/Http/Controllers/Tenant/ServicioController.php:19
+ * @see app/Http/Controllers/Tenant/ServicioController.php:21
  * @route '//{tenant}.localhost/servicios'
  */
         indexForm.get = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -164,7 +164,7 @@ index.head = (args: { tenant: string | number } | [tenant: string | number ] | s
         })
             /**
 * @see \App\Http\Controllers\Tenant\ServicioController::index
- * @see app/Http/Controllers/Tenant/ServicioController.php:19
+ * @see app/Http/Controllers/Tenant/ServicioController.php:21
  * @route '//{tenant}.localhost/servicios'
  */
         indexForm.head = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -180,7 +180,7 @@ index.head = (args: { tenant: string | number } | [tenant: string | number ] | s
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::store
- * @see app/Http/Controllers/Tenant/ServicioController.php:42
+ * @see app/Http/Controllers/Tenant/ServicioController.php:44
  * @route '//{tenant}.localhost/servicios'
  */
 export const store = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -195,7 +195,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::store
- * @see app/Http/Controllers/Tenant/ServicioController.php:42
+ * @see app/Http/Controllers/Tenant/ServicioController.php:44
  * @route '//{tenant}.localhost/servicios'
  */
 store.url = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -223,7 +223,7 @@ store.url = (args: { tenant: string | number } | [tenant: string | number ] | st
 
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::store
- * @see app/Http/Controllers/Tenant/ServicioController.php:42
+ * @see app/Http/Controllers/Tenant/ServicioController.php:44
  * @route '//{tenant}.localhost/servicios'
  */
 store.post = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -233,7 +233,7 @@ store.post = (args: { tenant: string | number } | [tenant: string | number ] | s
 
     /**
 * @see \App\Http\Controllers\Tenant\ServicioController::store
- * @see app/Http/Controllers/Tenant/ServicioController.php:42
+ * @see app/Http/Controllers/Tenant/ServicioController.php:44
  * @route '//{tenant}.localhost/servicios'
  */
     const storeForm = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -243,7 +243,7 @@ store.post = (args: { tenant: string | number } | [tenant: string | number ] | s
 
             /**
 * @see \App\Http\Controllers\Tenant\ServicioController::store
- * @see app/Http/Controllers/Tenant/ServicioController.php:42
+ * @see app/Http/Controllers/Tenant/ServicioController.php:44
  * @route '//{tenant}.localhost/servicios'
  */
         storeForm.post = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -254,7 +254,7 @@ store.post = (args: { tenant: string | number } | [tenant: string | number ] | s
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::update
- * @see app/Http/Controllers/Tenant/ServicioController.php:61
+ * @see app/Http/Controllers/Tenant/ServicioController.php:65
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
 export const update = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -269,7 +269,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::update
- * @see app/Http/Controllers/Tenant/ServicioController.php:61
+ * @see app/Http/Controllers/Tenant/ServicioController.php:65
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
 update.url = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions) => {
@@ -295,7 +295,7 @@ update.url = (args: { tenant: string | number, servicio: string | number } | [te
 
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::update
- * @see app/Http/Controllers/Tenant/ServicioController.php:61
+ * @see app/Http/Controllers/Tenant/ServicioController.php:65
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
 update.put = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -304,7 +304,7 @@ update.put = (args: { tenant: string | number, servicio: string | number } | [te
 })
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::update
- * @see app/Http/Controllers/Tenant/ServicioController.php:61
+ * @see app/Http/Controllers/Tenant/ServicioController.php:65
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
 update.patch = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -314,7 +314,7 @@ update.patch = (args: { tenant: string | number, servicio: string | number } | [
 
     /**
 * @see \App\Http\Controllers\Tenant\ServicioController::update
- * @see app/Http/Controllers/Tenant/ServicioController.php:61
+ * @see app/Http/Controllers/Tenant/ServicioController.php:65
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
     const updateForm = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -329,7 +329,7 @@ update.patch = (args: { tenant: string | number, servicio: string | number } | [
 
             /**
 * @see \App\Http\Controllers\Tenant\ServicioController::update
- * @see app/Http/Controllers/Tenant/ServicioController.php:61
+ * @see app/Http/Controllers/Tenant/ServicioController.php:65
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
         updateForm.put = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -343,7 +343,7 @@ update.patch = (args: { tenant: string | number, servicio: string | number } | [
         })
             /**
 * @see \App\Http\Controllers\Tenant\ServicioController::update
- * @see app/Http/Controllers/Tenant/ServicioController.php:61
+ * @see app/Http/Controllers/Tenant/ServicioController.php:65
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
         updateForm.patch = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -359,7 +359,7 @@ update.patch = (args: { tenant: string | number, servicio: string | number } | [
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::destroy
- * @see app/Http/Controllers/Tenant/ServicioController.php:98
+ * @see app/Http/Controllers/Tenant/ServicioController.php:104
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
 export const destroy = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -374,7 +374,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::destroy
- * @see app/Http/Controllers/Tenant/ServicioController.php:98
+ * @see app/Http/Controllers/Tenant/ServicioController.php:104
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
 destroy.url = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions) => {
@@ -400,7 +400,7 @@ destroy.url = (args: { tenant: string | number, servicio: string | number } | [t
 
 /**
 * @see \App\Http\Controllers\Tenant\ServicioController::destroy
- * @see app/Http/Controllers/Tenant/ServicioController.php:98
+ * @see app/Http/Controllers/Tenant/ServicioController.php:104
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
 destroy.delete = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -410,7 +410,7 @@ destroy.delete = (args: { tenant: string | number, servicio: string | number } |
 
     /**
 * @see \App\Http\Controllers\Tenant\ServicioController::destroy
- * @see app/Http/Controllers/Tenant/ServicioController.php:98
+ * @see app/Http/Controllers/Tenant/ServicioController.php:104
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
     const destroyForm = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -425,7 +425,7 @@ destroy.delete = (args: { tenant: string | number, servicio: string | number } |
 
             /**
 * @see \App\Http\Controllers\Tenant\ServicioController::destroy
- * @see app/Http/Controllers/Tenant/ServicioController.php:98
+ * @see app/Http/Controllers/Tenant/ServicioController.php:104
  * @route '//{tenant}.localhost/servicios/{servicio}'
  */
         destroyForm.delete = (args: { tenant: string | number, servicio: string | number } | [tenant: string | number, servicio: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

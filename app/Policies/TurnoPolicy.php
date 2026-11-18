@@ -25,10 +25,11 @@ class TurnoPolicy
             return false;
         }
 
-        return $user->hasAnyRole(['dueño_principal', 'dueño'], 'tenant')
+        return $user->hasAnyRole(['dueño_principal'], 'tenant')
             || $user->can('turnos.view_all')
             || $user->can('kanban.view');
     }
+
 
     /*PAra que cualquier usuario pueda ver los detalles de los turnos */
 
@@ -90,8 +91,15 @@ class TurnoPolicy
         if (! $this->isAuthorizedTenantUser($user)) {
             return false;
         }
-
-
         return $user->hasAnyRole(['dueño_principal', 'dueño'], 'tenant');
+    }
+
+    public function export(TenantUser $user): bool
+    {
+        if (! $this->isAuthorizedTenantUser($user)) {
+            return false;
+        }
+        return $user->hasAnyRole(['dueño_principal'], 'tenant') ||
+            $user->can("analytics.report");
     }
 }

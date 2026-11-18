@@ -108,8 +108,16 @@ Route::domain('{tenant}.' . config('app.central_domain', 'localhost'))
                 ]);
 
             //rutas para turnos ()
+            Route::get('/turnos/calendario/export-pdf', [TurnoController::class, 'exportPdf'])
+                ->name('tenant.turnos.export-pdf')
+                ->middleware('permission:analytics.report');
+
+            Route::get('/turnos/calendario/export-excel', [TurnoController::class, 'exportExcel'])
+                ->name('tenant.turnos.export-excel');
+
             Route::get('/turnos/calendario', [TurnoController::class, 'calendario'])
                 ->name('tenant.turnos.calendario');
+
             Route::patch('/turnos/{turno}/estado', [TurnoController::class, 'cambiarEstado'])
                 ->name('tenant.turnos.estado');
             Route::resource('turnos', TurnoController::class)

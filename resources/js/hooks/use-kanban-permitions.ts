@@ -16,10 +16,12 @@ export function useKanbanPermissions() {
 
     const userId = auth?.user?.id ?? null;
 
-    const isOwner =
-        Boolean(
-            tenantRoles?.some((r) => r === "dueño_principal" || r === "dueño"),
-        ) || Boolean(tenantPermissions?.includes("business_settings.manage"));
+    const isOwner = Boolean(
+        tenantRoles?.some((r) => r === "dueño_principal" || r === "dueño"),
+    );
+    const isPrincipalOwner = Boolean(
+        tenantRoles?.some((r) => r === "dueño_principal"),
+    );
 
     const puedeGestionarTurno = (turno: TurnoDiarioItem): boolean => {
         if (isOwner) return true;
@@ -39,5 +41,6 @@ export function useKanbanPermissions() {
         userId,
         isOwner,
         puedeGestionarTurno,
+        isPrincipalOwner,
     };
 }

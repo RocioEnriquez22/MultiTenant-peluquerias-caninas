@@ -18,23 +18,26 @@ class TenantUsersSeeder extends Seeder
         $permisosInicialesEmpleado = [
             'dashboard.view',
             'turnos.view_all',
-            'turnos.view_own',
-            'turnos.create_own',
-            'turnos.update_own',
-            'turnos.cancel_own',
             'kanban.view',
             'kanban.manage_any',
         ];
+
+        $permisosInicialesDueñoSec = [
+            'dashboard.view',
+            'turnos.view_all',
+            'kanban.view',
+            'kanban.manage_any',
+            'gestionar.users',
+            'gestionar.permisos',
+        ];
+
         $users = [
             [
                 'nombre' => 'Dueño',
                 'apellido' => 'Prueba',
                 'email' => 'dueno@example.com',
                 'role' => 'dueño',
-                'permissions' => Permission::query()
-                    ->where('guard_name', 'tenant')
-                    ->pluck('name')
-                    ->all(),
+                'permissions' => $permisosInicialesDueñoSec
             ],
             [
                 'nombre' => 'Empleado',

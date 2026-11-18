@@ -300,7 +300,7 @@ export default function TenantDashboard({
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card className={isOwner ? "" : "sm:col-span-2"}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Tasa de Cumplimiento
@@ -323,7 +323,11 @@ export default function TenantDashboard({
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                     {/* Grafico de Barras: Servicios más solicitados */}
                     <Card
-                        className={isOwner ? "lg:col-span-4" : "lg:col-span-7"}
+                        className={
+                            isOwner
+                                ? "lg:col-span-4"
+                                : "sm:col-span-2 lg:col-span-7"
+                        }
                     >
                         <CardHeader>
                             <CardTitle>Servicios Más Solicitados</CardTitle>
@@ -662,7 +666,6 @@ export default function TenantDashboard({
                     </Card>
                 </div>
             </div>
-            <ScrollToBottomButton />
         </>
     );
 }

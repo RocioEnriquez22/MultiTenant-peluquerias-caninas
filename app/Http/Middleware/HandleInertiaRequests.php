@@ -48,8 +48,15 @@ class HandleInertiaRequests extends Middleware
                 ->pluck('name')
                 ->intersect([
                     'dashboard.view',
+                    'turnos.view_all',
+                    'kanban.view',
+                    'kanban.manage_any',
+                    'analytics.report',
+                    'whatsapp.manage',
+                    'business_settings.manage',
                     'gestionar.users',
                     'gestionar.permisos',
+                    'gestionar.servicios',
                 ])
                 ->values()
                 ->all();

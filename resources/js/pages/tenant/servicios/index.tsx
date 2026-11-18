@@ -1,6 +1,7 @@
 import { Head, router, usePage } from "@inertiajs/react";
 import { Pencil, Plus, Power, PowerOff, Scissors, Trash2 } from "lucide-react";
-
+import { useKanbanPermissions } from "@/hooks/use-kanban-permitions";
+import { useCan } from "@/hooks/use-can";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,13 +32,12 @@ const monedaFormato = new Intl.NumberFormat("es-AR", {
     currency: "ARS",
 });
 
-export default function ServiciosIndex({
-    servicios,
-    canManage,
-    tenantId,
-}: Props) {
+export default function ServiciosIndex({ servicios, tenantId }: Props) {
     const { errors } = usePage<SharedProps>().props;
+    const can = useCan();
+    const { isPrincipalOwner } = useKanbanPermissions();
 
+    const canManage = can("gestionar.servicios") || isPrincipalOwner;
     // Estado para controlar la apertura del modal y el servicio seleccionado
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedServicio, setSelectedServicio] =

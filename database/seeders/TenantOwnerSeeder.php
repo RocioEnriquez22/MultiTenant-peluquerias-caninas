@@ -25,6 +25,18 @@ class TenantOwnerSeeder extends Seeder
                 'No se pueden crear el dueño principal: faltan nombre o email en el tenant.'
             );
         }
+        $permisosNombres = [
+            'dashboard.view',
+            'turnos.view_all',
+            'kanban.view',
+            'kanban.manage_any',
+            'analytics.report',
+            'whatsapp.manage',
+            'business_settings.manage',
+            'gestionar.users',
+            'gestionar.permisos',
+            'gestionar.servicios',
+        ];
 
         $owner = TenantUser::firstOrCreate( //para evitar crear otra cuenta con el mismo email
             ['email' => trim($ownerEmail)],
@@ -38,5 +50,6 @@ class TenantOwnerSeeder extends Seeder
         );
 
         $owner->syncRoles(['dueño', 'dueño_principal']);
+        $owner->syncPermissions($permisosNombres);
     }
 }

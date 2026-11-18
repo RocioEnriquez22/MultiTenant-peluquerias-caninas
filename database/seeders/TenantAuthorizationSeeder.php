@@ -26,17 +26,14 @@ class TenantAuthorizationSeeder extends Seeder
         $permisosNombres = [
             'dashboard.view',
             'turnos.view_all',
-            'turnos.view_own',
-            'turnos.create_own',
-            'turnos.update_own',
-            'turnos.cancel_own',
             'kanban.view',
             'kanban.manage_any',
-            'analytics.view',
+            'analytics.report',
             'whatsapp.manage',
             'business_settings.manage',
             'gestionar.users',
             'gestionar.permisos',
+            'gestionar.servicios',
         ];
 
         foreach ($permisosNombres as $permisoNombre) {

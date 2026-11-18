@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Tenant;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Servicio;
-
+use App\Mail\ServicioModificadoMail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Gate;
-
+use App\Models\TenantUser;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -35,7 +37,7 @@ class ServicioController extends Controller
         return Inertia::render('tenant/servicios/index', [
             'tenantId' => tenant('id'),
             'servicios' => $servicios,
-            'canManage' => Gate::forUser($currentUser)->allows('create', Servicio::class),
+
         ]);
     }
 
@@ -48,12 +50,14 @@ class ServicioController extends Controller
             'descripcion' => ['nullable', 'string'],
             'precio' => ['required', 'numeric', 'min:0', 'max:99999999.99', 'decimal:0,2'],
         ]);
-        Servicio::create([
+        $servicio = Servicio::create([
             'nombre' => $validated['nombre'],
             'descripcion' => $validated['descripcion'] ?? null,
             'precio' => $validated['precio'],
             'activo' => true,
         ]);
+        $this->notificarCorreoCambio($servicio, 'Nuevo servicio creado');
+
         $this->flashToast('success', 'Servicio creado correctamente.');
         return redirect()->back();
     }
@@ -70,6 +74,7 @@ class ServicioController extends Controller
         ]);
 
         $servicio->update($validated);
+        $this->notificarCorreoCambio($servicio, 'Servicio editado');
 
         $this->flashToast('success', 'Servicio actualizado correctamente.');
 
@@ -92,6 +97,7 @@ class ServicioController extends Controller
             : 'Servicio desactivado correctamente.';
 
         $this->flashToast('success', $mensaje);
+        $this->notificarCorreoCambio($servicio, $mensaje);
 
         return redirect()->back();
     }
@@ -111,11 +117,44 @@ class ServicioController extends Controller
                 'servicio' => 'Este servicio ya se utilizó en turnos. Desactívalo en lugar de eliminarlo.',
             ]);
         }
-
+        $this->notificarCorreoCambio($servicio, 'Servicio Eliminado de Base de Dato');
         $servicio->delete();
 
         $this->flashToast('success', 'Servicio eliminado correctamente.');
 
         return redirect()->back();
+    }
+
+    private function notificarCorreoCambio(Servicio $servicio, string $accion)
+    {
+        $currentUser = auth('tenant')->user();
+        Gate::forUser($currentUser)->authorize('notifCorreo', Servicio::class);
+
+
+        $dueñoPrincipal = TenantUser::role('dueño_principal', 'tenant')
+            ->where('activo', true)
+            ->first();
+        if (! $dueñoPrincipal || empty($dueñoPrincipal->email)) {
+            return;
+        }
+
+        $data = [
+            'nombre_comercial' => tenant('nombre_comercial') ?? 'Peluquería Canina',
+            'destinatario_nombre' => trim($dueñoPrincipal->nombre . ' ' . ($dueñoPrincipal->apellido ?? '')),
+            'actor_nombre' => trim($currentUser->nombre . ' ' . ($currentUser->apellido ?? '')),
+            'actor_email' => $currentUser->email,
+            'accion_titulo' => $accion,
+            'servicio_nombre' => $servicio->nombre,
+            'servicio_descripcion' => $servicio->descripcion,
+            'servicio_precio' => (float) $servicio->precio,
+            'servicio_duracion' => (int) $servicio->duracion_minutos,
+            'servicio_activo' => (bool) $servicio->activo,
+            'fecha_hora' => now('America/Argentina/Salta')->format('d/m/Y H:i'),
+        ];
+        try {
+            Mail::to($dueñoPrincipal->email)->send(new ServicioModificadoMail($data));
+        } catch (\Throwable $e) {
+            Log::warning('No se pudo enviar el correo de auditoría de servicio: ' . $e->getMessage());
+        }
     }
 }

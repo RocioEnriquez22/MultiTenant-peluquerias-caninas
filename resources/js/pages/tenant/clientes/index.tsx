@@ -175,7 +175,7 @@ export default function ClientesIndex({
     const [orden, setOrden] = useState(filtros.orden ?? "cliente");
     const [direccion, setDireccion] = useState(filtros.direccion ?? "asc");
     const [porPagina, setPorPagina] = useState<number | string>(
-        filtros.por_pagina ?? 4,
+        filtros.por_pagina ?? "todos",
     );
 
     const aplicarFiltros = (e?: FormEvent) => {
@@ -197,7 +197,7 @@ export default function ClientesIndex({
         setEstado("");
         setOrden("cliente");
         setDireccion("asc");
-        setPorPagina(4);
+        setPorPagina("todos");
         router.get(
             "/clientes",
             {},
@@ -267,7 +267,7 @@ export default function ClientesIndex({
                         </p>
                     </div>
 
-                    <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div className="w-full flex flex-col  sm:flex-row justify-between items-center sm:items-center gap-4">
                         {/* Selector para alternar entre Tarjetas y Tabla */}
                         {canManage && (
                             <Button
@@ -383,7 +383,7 @@ export default function ClientesIndex({
                         </Button>
                         {(filtros.buscar ||
                             filtros.estado ||
-                            String(filtros.por_pagina) !== "4") && (
+                            String(filtros.por_pagina) !== "todos") && (
                             <Button
                                 type="button"
                                 variant="outline"

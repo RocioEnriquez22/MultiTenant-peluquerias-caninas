@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\Tenant;
 
+use App\Exports\TurnosMensualExport;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\TurnoRequest;
 use App\Models\Cliente;
@@ -376,5 +381,75 @@ class TurnoController extends Controller
         } catch (\Throwable) {
             return now()->toDateString();
         }
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $currentUser = auth('tenant')->user();
+        Gate::forUser($currentUser)->authorize('export', Turno::class);
+
+        $fecha = $this->parsearFecha($request->input('fecha'));
+        $carbonFecha = Carbon::parse($fecha);
+        $inicioMes = $carbonFecha->copy()->startOfMonth()->toDateString();
+        $finMes = $carbonFecha->copy()->endOfMonth()->toDateString();
+
+        $estadosPermitidos = ['pendiente', 'en_proceso', 'listo', 'cancelado'];
+        $estadosFiltro = array_values(array_intersect(
+            $estadosPermitidos,
+            (array) $request->input('estados', [])
+        ));
+
+        $turnos = Turno::query()
+            ->with(['cliente', 'mascota', 'servicios', 'realizadoPor'])
+            ->whereBetween('fecha', [$inicioMes, $finMes])
+            ->when(! empty($estadosFiltro), fn($q) => $q->whereIn('estado', $estadosFiltro))
+            ->orderBy('fecha', 'asc')
+            ->orderBy('hora', 'asc')
+            ->get();
+
+        $resumen = [
+            'total' => $turnos->count(),
+            'listos' => $turnos->where('estado', 'listo')->count(),
+            'activos' => $turnos->whereIn('estado', ['pendiente', 'en_proceso'])->count(),
+            'cancelados' => $turnos->where('estado', 'cancelado')->count(),
+            'ingresos' => (float) $turnos->where('estado', 'listo')->sum('monto_cobrado'),
+        ];
+
+        $periodoTexto = ucfirst($carbonFecha->locale('es')->translatedFormat('F Y'));
+        $nombreArchivo = 'reporte-turnos-' . $carbonFecha->format('Y-m') . '.pdf';
+
+        $pdf = Pdf::loadView('tenant.reportes.reporte-mensual', [
+            'nombreComercial' => tenant('nombre_comercial') ?? 'Peluquería Canina',
+            'periodoTexto' => $periodoTexto,
+            'fechaGeneracion' => now()->format('d/m/Y H:i'),
+            'turnos' => $turnos,
+            'resumen' => $resumen,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->stream($nombreArchivo);
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $currentUser = auth('tenant')->user();
+        Gate::forUser($currentUser)->authorize('export', Turno::class);
+
+        $fecha = $this->parsearFecha($request->input('fecha'));
+        $carbonFecha = Carbon::parse($fecha);
+        $inicioMes = $carbonFecha->copy()->startOfMonth()->toDateString();
+        $finMes = $carbonFecha->copy()->endOfMonth()->toDateString();
+
+        $estadosPermitidos = ['pendiente', 'en_proceso', 'listo', 'cancelado'];
+        $estadosFiltro = array_values(array_intersect(
+            $estadosPermitidos,
+            (array) $request->input('estados', [])
+        ));
+
+        $nombreArchivo = 'reporte-turnos-' . $carbonFecha->format('Y-m') . '.xlsx';
+
+        return Excel::download(
+            new TurnosMensualExport($inicioMes, $finMes, $estadosFiltro),
+            $nombreArchivo
+        );
     }
 }

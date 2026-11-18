@@ -29,7 +29,7 @@ class ClienteController extends Controller
         $estado = (string) $request->input('estado', ''); // '' (todos), '1' (activos), '0' (inactivos)
         $orden = (string) $request->input('orden', 'cliente');
         $direccion = (string) $request->input('direccion', 'asc');
-        $porPaginaInput = (string) $request->input('por_pagina', '4');
+        $porPaginaInput = (string) $request->input('por_pagina', 'todos');
 
         $camposPermitidos = ['cliente', 'mascotas', 'estado'];
         if (! in_array($orden, $camposPermitidos, true)) {
@@ -41,7 +41,7 @@ class ClienteController extends Controller
         }
 
         if (! in_array($porPaginaInput, ['4', '8', 'todos'], true)) {
-            $porPaginaInput = '4';
+            $porPaginaInput = 'todos';
         }
 
         //consulta a elocuent usando los los parametros
