@@ -14,8 +14,14 @@ use App\Policies\ServicioPolicy;
 
 use App\Models\Cliente;
 use App\Models\Mascota;
+use App\Models\TenantUser;
+use App\Models\Turno;
+use App\Models\Tenant;
 use App\Policies\ClientePolicy;
 use App\Policies\MascotaPolicy;
+use App\Policies\TenantUserPolicy;
+use App\Policies\TurnoPolicy;
+use App\Policies\BusinessSettingsPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,6 +45,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Servicio::class, ServicioPolicy::class);
         Gate::policy(Cliente::class, ClientePolicy::class);
         Gate::policy(Mascota::class, MascotaPolicy::class);
+        Gate::policy(Turno::class, TurnoPolicy::class);
+        Gate::policy(TenantUser::class, TenantUserPolicy::class);
+        Gate::policy(Tenant::class, BusinessSettingsPolicy::class);
     }
 
     /**

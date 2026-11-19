@@ -192,7 +192,7 @@ login.head = (args: { tenant: string | number } | [tenant: string | number ] | s
     login.form = loginForm
 /**
 * @see \App\Http\Controllers\Tenant\Auth\TenantSessionController::authenticate
- * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:27
+ * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:28
  * @route '//{tenant}.localhost/login'
  */
 export const authenticate = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -207,7 +207,7 @@ authenticate.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\Auth\TenantSessionController::authenticate
- * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:27
+ * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:28
  * @route '//{tenant}.localhost/login'
  */
 authenticate.url = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -235,7 +235,7 @@ authenticate.url = (args: { tenant: string | number } | [tenant: string | number
 
 /**
 * @see \App\Http\Controllers\Tenant\Auth\TenantSessionController::authenticate
- * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:27
+ * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:28
  * @route '//{tenant}.localhost/login'
  */
 authenticate.post = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -245,7 +245,7 @@ authenticate.post = (args: { tenant: string | number } | [tenant: string | numbe
 
     /**
 * @see \App\Http\Controllers\Tenant\Auth\TenantSessionController::authenticate
- * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:27
+ * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:28
  * @route '//{tenant}.localhost/login'
  */
     const authenticateForm = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -255,7 +255,7 @@ authenticate.post = (args: { tenant: string | number } | [tenant: string | numbe
 
             /**
 * @see \App\Http\Controllers\Tenant\Auth\TenantSessionController::authenticate
- * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:27
+ * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:28
  * @route '//{tenant}.localhost/login'
  */
         authenticateForm.post = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -363,7 +363,7 @@ dashboard.head = (args: { tenant: string | number } | [tenant: string | number ]
     dashboard.form = dashboardForm
 /**
 * @see \App\Http\Controllers\Tenant\Auth\TenantSessionController::logout
- * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:49
+ * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:50
  * @route '//{tenant}.localhost/logout'
  */
 export const logout = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -378,7 +378,7 @@ logout.definition = {
 
 /**
 * @see \App\Http\Controllers\Tenant\Auth\TenantSessionController::logout
- * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:49
+ * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:50
  * @route '//{tenant}.localhost/logout'
  */
 logout.url = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -406,7 +406,7 @@ logout.url = (args: { tenant: string | number } | [tenant: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\Tenant\Auth\TenantSessionController::logout
- * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:49
+ * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:50
  * @route '//{tenant}.localhost/logout'
  */
 logout.post = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -416,7 +416,7 @@ logout.post = (args: { tenant: string | number } | [tenant: string | number ] | 
 
     /**
 * @see \App\Http\Controllers\Tenant\Auth\TenantSessionController::logout
- * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:49
+ * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:50
  * @route '//{tenant}.localhost/logout'
  */
     const logoutForm = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -426,7 +426,7 @@ logout.post = (args: { tenant: string | number } | [tenant: string | number ] | 
 
             /**
 * @see \App\Http\Controllers\Tenant\Auth\TenantSessionController::logout
- * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:49
+ * @see app/Http/Controllers/Tenant/Auth/TenantSessionController.php:50
  * @route '//{tenant}.localhost/logout'
  */
         logoutForm.post = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

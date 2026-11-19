@@ -87,7 +87,7 @@ export function TenantSidebar() {
 
             <SidebarFooter>
                 <NavFooter items={footerNavItems} className="mt-auto" />
-                <NavUser showSettings={false} />
+                <NavUser showSettings={true} />
             </SidebarFooter>
         </Sidebar>
     );

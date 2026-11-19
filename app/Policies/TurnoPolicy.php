@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\TenantUser;
 use App\Models\Turno;
-use App\Models\TenantUserUser;
 use Illuminate\Auth\Access\Response;
 
 class TurnoPolicy

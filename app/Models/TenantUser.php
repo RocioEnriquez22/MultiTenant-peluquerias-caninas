@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 
 class TenantUser extends Authenticatable
@@ -11,6 +12,7 @@ class TenantUser extends Authenticatable
     //este modelo representa el usuario que Laravel va a buscar en la base tenant
     use HasRoles;
     use HasUuids;
+    use HasPermissions;
 
     protected $table = 'users';
     protected $fillable = [

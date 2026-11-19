@@ -20,6 +20,7 @@ class TenantSessionController extends Controller
             'tenant' => [
                 'id' => tenant('id'),
                 'nombre' => tenant('nombre_comercial'),
+                'logo_url' => tenant('logo_url'),
             ],
         ]);
     }

@@ -126,6 +126,8 @@ Route::domain('{tenant}.' . config('app.central_domain', 'localhost'))
                 ->parameters(['turnos' => 'turno']);
         });
 
+        //rutas para el logo
+
 
         Route::middleware('auth:tenant')->post(
             '/logout',
