@@ -113,8 +113,9 @@ class ServicioController extends Controller
             ->exists();
 
         if ($tieneTurnos) {
+            $this->toggleStatus($tenant, $id);
             throw ValidationException::withMessages([
-                'servicio' => 'Este servicio ya se utilizó en turnos. Desactívalo en lugar de eliminarlo.',
+                'servicio' => 'Este servicio ya se utilizó en turnos. Se desactivara en vez de eliminarse.',
             ]);
         }
         $this->notificarCorreoCambio($servicio, 'Servicio Eliminado de Base de Dato');
@@ -128,7 +129,10 @@ class ServicioController extends Controller
     private function notificarCorreoCambio(Servicio $servicio, string $accion)
     {
         $currentUser = auth('tenant')->user();
-        Gate::forUser($currentUser)->authorize('notifCorreo', Servicio::class);
+        if (!$currentUser || ! Gate::forUser($currentUser)->allows('notifCorreo', Servicio::class)) {
+
+            return;
+        }
 
 
         $dueñoPrincipal = TenantUser::role('dueño_principal', 'tenant')

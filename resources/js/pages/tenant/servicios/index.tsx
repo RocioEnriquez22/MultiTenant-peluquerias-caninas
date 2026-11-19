@@ -201,23 +201,18 @@ export default function ServiciosIndex({ servicios, tenantId }: Props) {
                                             <Pencil className="mr-1 size-4" />
                                             Editar
                                         </Button>
-
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            onClick={() =>
-                                                handleCambioEstado(servicio)
-                                            }
-                                        >
-                                            {servicio.activo ? (
-                                                <PowerOff className="mr-1 size-4" />
-                                            ) : (
+                                        {!servicio.activo && (
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                onClick={() =>
+                                                    handleCambioEstado(servicio)
+                                                }
+                                            >
                                                 <Power className="mr-1 size-4" />
-                                            )}
-                                            {servicio.activo
-                                                ? "Desactivar"
-                                                : "Activar"}
-                                        </Button>
+                                                Activar
+                                            </Button>
+                                        )}
 
                                         <Button
                                             type="button"
