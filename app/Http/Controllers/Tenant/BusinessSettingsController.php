@@ -38,11 +38,12 @@ class BusinessSettingsController extends Controller
 
         if ($request->hasFile('logo')) {
             // Elimina imagen previa para evitar archivos solos
-            if ($tenant->logo && Storage::disk('public')->exists($tenant->logo)) {
-                Storage::disk('public')->delete($tenant->logo);
+            $disk = $this->centralPublicDisk();
+            if ($tenant->logo && $disk->exists($tenant->logo)) {
+                $disk->delete($tenant->logo);
             }
 
-            $ruta = $request->file('logo')->store('logos', 'public');
+            $ruta = $disk->putFile('logos', $request->file('logo'));
 
             $tenant->update([
                 'logo' => $ruta,
@@ -60,9 +61,10 @@ class BusinessSettingsController extends Controller
         $tenant = tenant();
 
         Gate::forUser($currentUser)->authorize('manage', $tenant);
+        $disk = $this->centralPublicDisk();
 
-        if ($tenant->logo && Storage::disk('public')->exists($tenant->logo)) {
-            Storage::disk('public')->delete($tenant->logo);
+        if ($tenant->logo && $disk->exists($tenant->logo)) {
+            $disk->delete($tenant->logo);
         }
 
         $tenant->update(['logo' => null]);
@@ -70,5 +72,15 @@ class BusinessSettingsController extends Controller
         $this->flashToast('success', 'Logo eliminado. Se usará el ícono por defecto.');
 
         return redirect()->back();
+    }
+
+    private function centralPublicDisk()
+    {
+        return Storage::build([
+            'driver' => 'local',
+            'root' => base_path('storage/app/public'),
+            'url' => '/storage',
+            'visibility' => 'public',
+        ]);
     }
 }

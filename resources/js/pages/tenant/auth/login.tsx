@@ -25,7 +25,7 @@ export default function TenantLogin({ tenant }: Props) {
                         <img
                             src={tenant.logo_url}
                             alt={`Logo de ${tenant.nombre}`}
-                            className="h-20 w-20 rounded-full border object-cover shadow-sm"
+                            className="h-35 w-35 rounded-full border object-cover shadow-sm"
                         />
                     ) : (
                         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">

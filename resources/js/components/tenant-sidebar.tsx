@@ -1,4 +1,4 @@
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import {
     LayoutGrid,
     Users,
@@ -21,12 +21,22 @@ import {
 } from "@/components/ui/sidebar";
 import type { NavItem } from "@/types";
 import { useCan } from "@/hooks/use-can";
+import { Scissors } from "lucide-react";
 
 //aqui estaran los navItems que tendran los tenant acceso
+
+type TenantSharedProps = {
+    currentTenant?: {
+        id: string;
+        nombre: string;
+        logo_url: string | null;
+    } | null;
+};
 
 const footerNavItems: NavItem[] = [];
 
 export function TenantSidebar() {
+    const { currentTenant } = usePage<TenantSharedProps>().props;
     const can = useCan();
     const tenantNavItems: NavItem[] = [
         {
@@ -59,6 +69,25 @@ export function TenantSidebar() {
         },
     ];
 
+    const headerContent = (
+        <div className="flex items-center gap-2.5 overflow-hidden">
+            {currentTenant?.logo_url ? (
+                <img
+                    src={currentTenant.logo_url}
+                    alt={currentTenant.nombre}
+                    className="size-12 shrink-0 rounded-full border object-cover"
+                />
+            ) : (
+                <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <Scissors className="size-4" />
+                </div>
+            )}
+            <span className="truncate text-sm font-semibold">
+                {currentTenant?.nombre || "Mi negocio"}
+            </span>
+        </div>
+    );
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -67,9 +96,7 @@ export function TenantSidebar() {
                         <SidebarMenuButton size="lg" asChild>
                             {can("dashboard.view") ? (
                                 <Link href="/dashboard" prefetch>
-                                    <span className="truncate text-sm font-semibold">
-                                        Mi negocio
-                                    </span>
+                                    {headerContent}
                                 </Link>
                             ) : (
                                 <span className="truncate text-sm font-semibold">

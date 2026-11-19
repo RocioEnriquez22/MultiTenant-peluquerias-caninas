@@ -80,6 +80,12 @@ class HandleInertiaRequests extends Middleware
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'tenantPermissions' => $tenantPermissions,
             'tenantRoles' => $tenantRoles,
+
+            'currentTenant' => fn() => tenant() ? [
+                'id' => tenant('id'),
+                'nombre' => tenant('nombre_comercial'),
+                'logo_url' => tenant()->logo_url,
+            ] : null,
         ];
     }
 }

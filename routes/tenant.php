@@ -17,6 +17,9 @@ use App\Http\Controllers\Tenant\DashboardController;
 use App\Http\Controllers\Tenant\ClienteController;
 use App\Http\Controllers\Tenant\MascotaController;
 
+use App\Http\Controllers\Tenant\BusinessSettingsController;
+use App\Http\Controllers\Tenant\TenantProfileSettingsController;
+
 /*
 |--------------------------------------------------------------------------
 | Tenant Routes
@@ -126,7 +129,31 @@ Route::domain('{tenant}.' . config('app.central_domain', 'localhost'))
                 ->parameters(['turnos' => 'turno']);
         });
 
-        //rutas para el logo
+        //rutas para el logo y setting de los tenants
+        // Settings del Tenant
+        Route::redirect('/settings', '/settings/profile');
+
+        Route::get('/settings/profile', [TenantProfileSettingsController::class, 'edit'])
+            ->name('tenant.profile.edit');
+        Route::patch('/settings/profile', [TenantProfileSettingsController::class, 'update'])
+            ->name('tenant.profile.update');
+
+        Route::get('/settings/security', [TenantProfileSettingsController::class, 'editSecurity'])
+            ->name('tenant.security.edit');
+        Route::put('/settings/password', [TenantProfileSettingsController::class, 'updatePassword'])
+            ->middleware('throttle:6,1')
+            ->name('tenant.password.update');
+
+        Route::inertia('/settings/appearance', 'tenant/settings/appearance')
+            ->name('tenant.appearance.edit');
+
+        // Configuración del negocio (solo dueño_principal / permiso business_settings.manage)
+        Route::get('/settings/negocio', [BusinessSettingsController::class, 'edit'])
+            ->name('tenant.settings.edit');
+        Route::post('/settings/negocio/logo', [BusinessSettingsController::class, 'updateLogo'])
+            ->name('tenant.settings.logo.update');
+        Route::delete('/settings/negocio/logo', [BusinessSettingsController::class, 'destroyLogo'])
+            ->name('tenant.settings.logo.destroy');
 
 
         Route::middleware('auth:tenant')->post(

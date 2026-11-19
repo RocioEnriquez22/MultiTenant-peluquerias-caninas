@@ -16,6 +16,7 @@ class TenantUser extends Authenticatable
 
     protected $table = 'users';
     protected $fillable = [
+        'id',
         'nombre',
         'apellido',
         'email',

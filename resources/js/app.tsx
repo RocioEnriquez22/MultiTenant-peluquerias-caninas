@@ -37,6 +37,8 @@ void createInertiaApp({
                 return TenantLayout;
             case name.startsWith("tenant/turnos/"):
                 return TenantLayout;
+            case name.startsWith("tenant/settings/"):
+                return TenantLayout;
             default:
                 return AppLayout;
         }

@@ -3,8 +3,13 @@ import users from './users'
 import servicios from './servicios'
 import clientes from './clientes'
 import turnos from './turnos'
+import profile from './profile'
+import security from './security'
+import password from './password'
+import appearance from './appearance'
+import settings from './settings'
 /**
- * @see routes/tenant.php:35
+ * @see routes/tenant.php:38
  * @route '//{tenant}.localhost'
  */
 export const home = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -18,7 +23,7 @@ home.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/tenant.php:35
+ * @see routes/tenant.php:38
  * @route '//{tenant}.localhost'
  */
 home.url = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -45,7 +50,7 @@ home.url = (args: { tenant: string | number } | [tenant: string | number ] | str
 }
 
 /**
- * @see routes/tenant.php:35
+ * @see routes/tenant.php:38
  * @route '//{tenant}.localhost'
  */
 home.get = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -53,7 +58,7 @@ home.get = (args: { tenant: string | number } | [tenant: string | number ] | str
     method: 'get',
 })
 /**
- * @see routes/tenant.php:35
+ * @see routes/tenant.php:38
  * @route '//{tenant}.localhost'
  */
 home.head = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -62,7 +67,7 @@ home.head = (args: { tenant: string | number } | [tenant: string | number ] | st
 })
 
     /**
- * @see routes/tenant.php:35
+ * @see routes/tenant.php:38
  * @route '//{tenant}.localhost'
  */
     const homeForm = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -71,7 +76,7 @@ home.head = (args: { tenant: string | number } | [tenant: string | number ] | st
     })
 
             /**
- * @see routes/tenant.php:35
+ * @see routes/tenant.php:38
  * @route '//{tenant}.localhost'
  */
         homeForm.get = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +84,7 @@ home.head = (args: { tenant: string | number } | [tenant: string | number ] | st
             method: 'get',
         })
             /**
- * @see routes/tenant.php:35
+ * @see routes/tenant.php:38
  * @route '//{tenant}.localhost'
  */
         homeForm.head = (args: { tenant: string | number } | [tenant: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -444,6 +449,11 @@ users: Object.assign(users, users),
 servicios: Object.assign(servicios, servicios),
 clientes: Object.assign(clientes, clientes),
 turnos: Object.assign(turnos, turnos),
+profile: Object.assign(profile, profile),
+security: Object.assign(security, security),
+password: Object.assign(password, password),
+appearance: Object.assign(appearance, appearance),
+settings: Object.assign(settings, settings),
 logout: Object.assign(logout, logout),
 }
 
