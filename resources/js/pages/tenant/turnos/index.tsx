@@ -213,6 +213,7 @@ export default function TurnosIndex({
                 <FinalizarTurnoModal
                     onClose={() => setTurnoAFinalizar(null)}
                     turno={turnoAFinalizar}
+                    serviciosCatalogo={servicios}
                 />
             </main>
         </>

@@ -7,6 +7,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @method bool hasRole(string|array|\Spatie\Permission\Contracts\Role $roles, ?string $guard = null)
+ * @method bool hasAnyRole(string|array|\Spatie\Permission\Contracts\Role ...$roles)
+ * @method bool checkPermissionTo(string|int|\Spatie\Permission\Contracts\Permission $permission, ?string $guardName = null)
+ */
+
 class TenantUser extends Authenticatable
 {
     //este modelo representa el usuario que Laravel va a buscar en la base tenant

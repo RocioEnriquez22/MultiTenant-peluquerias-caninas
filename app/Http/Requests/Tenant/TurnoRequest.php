@@ -33,6 +33,12 @@ class TurnoRequest extends FormRequest
                     'numeric',
                     'min:0',
                 ],
+                'servicios' => [
+                    Rule::requiredIf(fn() => $this->input('estado') === 'listo'),
+                    'array',
+                    'min:1',
+                ],
+                'servicios.*' => ['uuid', 'distinct', 'exists:servicios,id'],
             ];
         }
 

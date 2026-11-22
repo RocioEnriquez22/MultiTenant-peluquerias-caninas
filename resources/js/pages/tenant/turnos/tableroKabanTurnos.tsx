@@ -123,6 +123,8 @@ function TurnoCard({
         turno.estado === "en_proceso" &&
         turno.realizado_por !== null &&
         !puedeGestionar;
+
+    const puedeArrastrar = !isOverlay && puedeGestionar;
     const card = (
         <div
             className={cn(
@@ -302,8 +304,8 @@ function TurnoCard({
     );
 
     return (
-        <KanbanItem value={turno.id} disabled={bloqueadoPorOtro}>
-            {isOverlay || bloqueadoPorOtro ? (
+        <KanbanItem value={turno.id} disabled={!puedeArrastrar}>
+            {!puedeArrastrar ? (
                 card
             ) : (
                 <KanbanItemHandle>{card}</KanbanItemHandle>

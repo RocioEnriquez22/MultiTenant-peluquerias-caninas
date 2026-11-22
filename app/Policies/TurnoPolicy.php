@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\TenantUser;
 use App\Models\Turno;
 use Illuminate\Auth\Access\Response;
+use Psy\Readline\Hoa\Console;
 
 class TurnoPolicy
 {
@@ -12,8 +13,9 @@ class TurnoPolicy
     {
         if (! $user instanceof TenantUser || ! $user->activo) {
             return false;
+        } else {
+            return true;
         }
-        return $user->hasAnyRole(['dueño_principal', 'dueño', 'empleado'], 'tenant');
     }
     /**
      * Determine whether the user can view any models.
@@ -25,8 +27,8 @@ class TurnoPolicy
         }
 
         return $user->hasAnyRole(['dueño_principal'], 'tenant')
-            || $user->can('turnos.view_all')
-            || $user->can('kanban.view');
+            || $user->checkPermissionTo('turnos.view_all', 'tenant')
+            || $user->checkPermissionTo('kanban.view', 'tenant');
     }
 
 
@@ -58,9 +60,19 @@ class TurnoPolicy
         if (! $this->isAuthorizedTenantUser($user)) {
             return false;
         }
-        return $user->hasAnyRole(['dueño_principal', 'dueño'], 'tenant')
-            || $user->can('turnos.update_own')
-            || $user->can('kanban.manage_any');
+        if ($user->hasAnyRole(['dueño_principal'], 'tenant')) {
+            return true;
+        }
+
+        if (in_array($turno->estado, ['listo', 'cancelado'], true)) {
+            return false;
+        }
+        if ($turno->estado === 'en_proceso' && $turno->empleado_id !== null && $turno->empleado_id !== $user->id) {
+            return false;
+        }
+
+        return $user->checkPermissionTo('turnos.update_own', 'tenant')
+            || $user->checkPermissionTo('kanban.manage_any', 'tenant');
     }
 
     public function cambiarEstado(TenantUser $user, Turno $turno): bool
@@ -69,19 +81,23 @@ class TurnoPolicy
             return false;
         }
 
-        if (
-            $user->hasAnyRole(['dueño_principal', 'dueño', 'empleado'], 'tenant')
-            || $user->can('kanban.manage_any')
-            || $user->can('turnos.update_own')
-        ) {
+        if ($user->hasRole('dueño_principal', 'tenant')) {
             return true;
         }
 
-        if ($turno->estado == 'en_proceso' && $turno->empleado_id !== null && $turno->empleado_id !== $user->id) {
+        if (in_array($turno->estado, ['listo', 'cancelado'], true)) {
             return false;
         }
-        return $this->viewAny($user);
+
+        if ($turno->estado === 'en_proceso' && $turno->empleado_id !== null && $turno->empleado_id !== $user->id) {
+            return false;
+        }
+
+        return $user->checkPermissionTo('kanban.manage_any', 'tenant')
+            || $user->checkPermissionTo('turnos.update_own', 'tenant');
     }
+
+
     /**
      * Determine whether the user can delete the model.
      */
@@ -98,7 +114,6 @@ class TurnoPolicy
         if (! $this->isAuthorizedTenantUser($user)) {
             return false;
         }
-        return $user->hasAnyRole(['dueño_principal'], 'tenant') ||
-            $user->can("analytics.report");
+        return $user->hasAnyRole(['dueño_principal'], 'tenant') || $user->checkPermissionTo('analytics.report', 'tenant');
     }
 }

@@ -23,15 +23,24 @@ export function useKanbanPermissions() {
         tenantRoles?.some((r) => r === "dueño_principal"),
     );
 
+    const puedeEditar = Boolean(
+        tenantPermissions?.includes("turnos.update_own"),
+    );
     const puedeGestionarTurno = (turno: TurnoDiarioItem): boolean => {
-        if (isOwner) return true;
+        if (isPrincipalOwner) {
+            return true;
+        }
+
+        if (turno.estado === "listo" || turno.estado === "cancelado") {
+            return false;
+        }
 
         if (
             turno.estado === "en_proceso" &&
             turno.realizado_por &&
             turno.realizado_por.id !== userId
         ) {
-            return false;
+            return Boolean(tenantPermissions?.includes("kanban.manage_any"));
         }
 
         return true;
@@ -42,5 +51,6 @@ export function useKanbanPermissions() {
         isOwner,
         puedeGestionarTurno,
         isPrincipalOwner,
+        puedeEditar,
     };
 }

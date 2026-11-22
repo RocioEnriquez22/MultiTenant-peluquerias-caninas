@@ -214,18 +214,25 @@ class TurnoController extends Controller
         return redirect()->back();
     }
 
+
+
     /**
      * Cambia el estado en el Tablero Kanban.
      */
     public function cambiarEstado(TurnoRequest $request, string $tenant, Turno $turno): RedirectResponse
     {
         $currentUser = auth('tenant')->user();
-        Gate::forUser($currentUser)->authorize('cambiarEstado', $turno);
+        if (! Gate::forUser($currentUser)->allows('cambiarEstado', $turno)) {
+            $this->flashToast('error', 'No tienes permiso para modificar este turno.');
+
+            return redirect()->back();
+        }
         $validated = $request->validated();
         $nuevoEstado = $validated['estado'];
 
         if ($nuevoEstado === 'en_proceso') {
-            if ($turno->estado !== 'pendiente') {
+            $esDueñoPrincipal = $currentUser->hasRole('dueño_principal', 'tenant');
+            if ($turno->estado !== 'pendiente' && !$esDueñoPrincipal) {
                 $this->flashToast('error', 'Este turno ya fue tomado por otro usuario.');
                 return redirect()->back();
             }
@@ -238,15 +245,34 @@ class TurnoController extends Controller
         }
 
         if ($nuevoEstado === 'listo') {
-            $turno->update([
-                'estado' => 'listo',
-                'empleado_id' => $turno->empleado_id ?? $currentUser->id,
-                'finalizado_at' => now(),
-                'metodo_pago' => $validated['metodo_pago'],
-                'monto_cobrado' => $validated['monto_cobrado'],
-            ]);
+            DB::transaction(function () use ($turno, $validated, $currentUser): void {
+                if (! empty($validated['servicios'])) {
+                    $preciosHistoricos = $turno->servicios()
+                        ->pluck('turno_servicio.precio_historico', 'servicios.id');
+
+                    $pivotData = [];
+                    foreach ($validated['servicios'] as $servicioId) {
+                        $precio = $preciosHistoricos->get($servicioId)
+                            ?? Servicio::find($servicioId)?->precio
+                            ?? 0;
+                        $pivotData[$servicioId] = ['precio_historico' => $precio];
+                    }
+
+                    $turno->servicios()->sync($pivotData);
+                }
+
+                $turno->update([
+                    'estado' => 'listo',
+                    'empleado_id' => $turno->empleado_id ?? $currentUser->id,
+                    'finalizado_at' => now(),
+                    'metodo_pago' => $validated['metodo_pago'],
+                    'monto_cobrado' => $validated['monto_cobrado'],
+                ]);
+            });
 
             $this->flashToast('success', 'Turno finalizado y cobro registrado.');
+
+            return redirect()->back();
         }
         // Si vuelve a pendiente, en_proceso o se cancela
         $turno->update([
