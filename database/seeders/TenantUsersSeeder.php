@@ -19,16 +19,15 @@ class TenantUsersSeeder extends Seeder
             'dashboard.view',
             'turnos.view_all',
             'kanban.view',
-            'kanban.manage_any',
         ];
 
         $permisosInicialesDueñoSec = [
             'dashboard.view',
             'turnos.view_all',
             'kanban.view',
-            'kanban.manage_any',
             'gestionar.users',
             'gestionar.permisos',
+            'turnos.editar_finalizado',
         ];
 
         $users = [

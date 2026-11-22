@@ -186,25 +186,33 @@ class TurnoController extends Controller
 
         DB::transaction(function () use ($turno, $validated): void {
             $serviciosSeleccionados = Servicio::whereIn('id', $validated['servicios'])->get();
-            $totalActualizado = $serviciosSeleccionados->sum('precio');
+
+            // Conservamos los precios históricos que ya tenía congelados este turno
+            $preciosExistentes = $turno->servicios()
+                ->pluck('turno_servicio.precio_historico', 'servicios.id');
+            $pivotData = [];
+            $totalActualizado = 0;
+
+            foreach ($serviciosSeleccionados as $servicio) {
+                $precio = $preciosExistentes->has($servicio->id)
+                    ? (float) $preciosExistentes->get($servicio->id)
+                    : (float) $servicio->precio;
+
+                $pivotData[$servicio->id] = [
+                    'precio_historico' => $precio,
+                ];
+                $totalActualizado += $precio;
+            }
 
             $turno->update([
                 'cliente_id' => $validated['cliente_id'],
                 'mascota_id' => $validated['mascota_id'],
                 'fecha' => $validated['fecha'],
                 'hora' => $validated['hora'],
-                // Si aún no fue cobrado, actualizamos el monto estimado según los nuevos servicios
-                'monto_cobrado' => $turno->estado === 'listo' ? $turno->monto_cobrado : $totalActualizado,
+                // Siempre sincronizamos monto_cobrado con la suma real de los servicios del turno
+                'monto_cobrado' => $totalActualizado,
                 'notas_turno' => $validated['notas_turno'] ?? null,
             ]);
-
-            // Sincronizamos la tabla pivote (agrega nuevos, quita desmarcados)
-            $pivotData = [];
-            foreach ($serviciosSeleccionados as $servicio) {
-                $pivotData[$servicio->id] = [
-                    'precio_historico' => $servicio->precio,
-                ];
-            }
 
             $turno->servicios()->sync($pivotData);
         });
@@ -222,25 +230,34 @@ class TurnoController extends Controller
     public function cambiarEstado(TurnoRequest $request, string $tenant, Turno $turno): RedirectResponse
     {
         $currentUser = auth('tenant')->user();
+
         if (! Gate::forUser($currentUser)->allows('cambiarEstado', $turno)) {
             $this->flashToast('error', 'No tienes permiso para modificar este turno.');
 
             return redirect()->back();
         }
+
         $validated = $request->validated();
         $nuevoEstado = $validated['estado'];
 
         if ($nuevoEstado === 'en_proceso') {
-            $esDueñoPrincipal = $currentUser->hasRole('dueño_principal', 'tenant');
-            if ($turno->estado !== 'pendiente' && !$esDueñoPrincipal) {
+            $puedeGestionarCualquiera = $currentUser->hasRole('dueño_principal', 'tenant')
+                || $currentUser->checkPermissionTo('kanban.cambiar_estado_cualquiera', 'tenant');
+
+            if ($turno->estado !== 'pendiente' && ! $puedeGestionarCualquiera) {
                 $this->flashToast('error', 'Este turno ya fue tomado por otro usuario.');
+
                 return redirect()->back();
             }
+
             $turno->update([
                 'estado' => 'en_proceso',
-                'empleado_id' => $currentUser->id,
+                'empleado_id' => $turno->empleado_id ?? $currentUser->id,
+                'finalizado_at' => null,
             ]);
-            $this->flashToast('success', 'Turno tomado (En Proceso).');
+
+            $this->flashToast('success', 'Turno pasado a En Proceso.');
+
             return redirect()->back();
         }
 
@@ -274,7 +291,8 @@ class TurnoController extends Controller
 
             return redirect()->back();
         }
-        // Si vuelve a pendiente, en_proceso o se cancela
+
+        // Si vuelve a pendiente o se cancela
         $turno->update([
             'estado' => $nuevoEstado,
             'empleado_id' => null,
@@ -283,12 +301,11 @@ class TurnoController extends Controller
         ]);
 
         $mensajes = [
-            'pendiente' => 'El turno volvió a Pendiente y quedo libre.',
+            'pendiente' => 'El turno volvió a Pendiente y quedó libre.',
             'cancelado' => 'Turno cancelado.',
         ];
 
         $this->flashToast('success', $mensajes[$nuevoEstado] ?? 'Estado actualizado.');
-
 
         return redirect()->back();
     }

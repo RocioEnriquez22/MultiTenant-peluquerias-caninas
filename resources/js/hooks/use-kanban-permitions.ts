@@ -23,34 +23,61 @@ export function useKanbanPermissions() {
         tenantRoles?.some((r) => r === "dueño_principal"),
     );
 
-    const puedeEditar = Boolean(
-        tenantPermissions?.includes("turnos.update_own"),
-    );
+    const canCambiarEstadoCualquiera =
+        isPrincipalOwner ||
+        Boolean(
+            tenantPermissions?.includes("kanban.cambiar_estado_cualquiera"),
+        );
+
+    const canEditarFinalizado =
+        isPrincipalOwner ||
+        Boolean(tenantPermissions?.includes("turnos.editar_finalizado"));
+
     const puedeGestionarTurno = (turno: TurnoDiarioItem): boolean => {
-        if (isPrincipalOwner) {
+        if (canCambiarEstadoCualquiera) {
             return true;
         }
 
+        // Sin permiso especial, al llegar a 'listo' o 'cancelado' la tarjeta queda bloqueada
         if (turno.estado === "listo" || turno.estado === "cancelado") {
             return false;
         }
 
+        // En 'en_proceso', solo el usuario que lo tomó puede moverlo
         if (
             turno.estado === "en_proceso" &&
             turno.realizado_por &&
             turno.realizado_por.id !== userId
         ) {
-            return Boolean(tenantPermissions?.includes("kanban.manage_any"));
+            return false;
         }
 
         return true;
     };
 
+    const puedeEditarTurno = (turno: TurnoDiarioItem): boolean => {
+        if (isPrincipalOwner) {
+            return true;
+        }
+
+        if (turno.estado === "listo") {
+            return canEditarFinalizado;
+        }
+
+        if (turno.estado === "cancelado") {
+            return false;
+        }
+
+        return puedeGestionarTurno(turno);
+    };
+
     return {
         userId,
         isOwner,
-        puedeGestionarTurno,
         isPrincipalOwner,
-        puedeEditar,
+        canCambiarEstadoCualquiera,
+        canEditarFinalizado,
+        puedeGestionarTurno,
+        puedeEditarTurno,
     };
 }

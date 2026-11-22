@@ -106,6 +106,7 @@ interface TurnoCardProps {
     turno: TurnoDiarioItem;
     isOverlay?: boolean;
     puedeGestionar?: boolean;
+    puedeEditar?: boolean;
     onEdit?: (turno: TurnoDiarioItem) => void;
     onRequestFinalizar?: (turno: TurnoDiarioItem) => void;
     onLiberarTurno?: (turno: TurnoDiarioItem) => void;
@@ -115,6 +116,7 @@ function TurnoCard({
     turno,
     isOverlay,
     puedeGestionar = true,
+    puedeEditar = false,
     onEdit,
     onRequestFinalizar,
     onLiberarTurno,
@@ -124,7 +126,14 @@ function TurnoCard({
         turno.realizado_por !== null &&
         !puedeGestionar;
 
+    const bloqueadoCerrado =
+        (turno.estado === "listo" || turno.estado === "cancelado") &&
+        !puedeGestionar;
+
+    const tarjetaBloqueada =
+        !isOverlay && (bloqueadoPorOtro || bloqueadoCerrado);
     const puedeArrastrar = !isOverlay && puedeGestionar;
+
     const card = (
         <div
             className={cn(
@@ -180,16 +189,14 @@ function TurnoCard({
                                 Ver ficha completa
                             </DropdownMenuItem>
 
-                            {puedeGestionar &&
-                                turno.estado !== "listo" &&
-                                turno.estado !== "cancelado" && (
-                                    <DropdownMenuItem
-                                        onClick={() => onEdit?.(turno)}
-                                    >
-                                        <Edit2 className="size-3.5 mr-2" />
-                                        Editar turno
-                                    </DropdownMenuItem>
-                                )}
+                            {puedeEditar && (
+                                <DropdownMenuItem
+                                    onClick={() => onEdit?.(turno)}
+                                >
+                                    <Edit2 className="size-3.5 mr-2" />
+                                    Editar turno
+                                </DropdownMenuItem>
+                            )}
                             {puedeGestionar &&
                                 turno.estado === "en_proceso" && (
                                     <DropdownMenuItem
@@ -200,15 +207,19 @@ function TurnoCard({
                                         Volver a Pendiente (Liberar)
                                     </DropdownMenuItem>
                                 )}
-                            {puedeGestionar && turno.estado !== "listo" && (
-                                <DropdownMenuItem
-                                    onClick={() => onRequestFinalizar?.(turno)}
-                                    className="text-emerald-700 font-medium"
-                                >
-                                    <CheckCircle2 className="size-3.5 mr-2" />
-                                    Marcar Listo / Cobrar
-                                </DropdownMenuItem>
-                            )}
+                            {puedeGestionar &&
+                                turno.estado !== "listo" &&
+                                turno.estado !== "cancelado" && (
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            onRequestFinalizar?.(turno)
+                                        }
+                                        className="text-emerald-700 font-medium"
+                                    >
+                                        <CheckCircle2 className="size-3.5 mr-2" />
+                                        Marcar Listo / Cobrar
+                                    </DropdownMenuItem>
+                                )}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 )}
@@ -321,7 +332,7 @@ export default function TableroKanbanTurnos({
     onEditTurno,
     onRequestFinalizar,
 }: Props) {
-    const { puedeGestionarTurno } = useKanbanPermissions();
+    const { puedeGestionarTurno, puedeEditarTurno } = useKanbanPermissions();
 
     const [columns, setColumns] = useState<Record<string, TurnoDiarioItem[]>>(
         () => agruparPorEstado(turnos),
@@ -384,6 +395,11 @@ export default function TableroKanbanTurnos({
             { estado: nuevoEstado },
             {
                 preserveScroll: true,
+                onSuccess: (page) => {
+                    const turnosFrescos =
+                        (page.props.turnos as TurnoDiarioItem[]) ?? turnos;
+                    setColumns(agruparPorEstado(turnosFrescos));
+                },
                 onError: () => setColumns(agruparPorEstado(turnos)),
             },
         );
@@ -450,6 +466,9 @@ export default function TableroKanbanTurnos({
                                                     key={turno.id}
                                                     turno={turno}
                                                     puedeGestionar={puedeGestionarTurno(
+                                                        turno,
+                                                    )}
+                                                    puedeEditar={puedeEditarTurno(
                                                         turno,
                                                     )}
                                                     onEdit={onEditTurno}

@@ -76,7 +76,7 @@ export default function TurnoShow({
 
     const estadoCfg = ESTADO_BADGE[turno.estado] || ESTADO_BADGE.pendiente;
 
-    const { puedeEditar } = useKanbanPermissions();
+    const { puedeEditarTurno } = useKanbanPermissions();
     return (
         <>
             <Head title={`Turno - ${turno.mascota.nombre} (${turno.fecha})`} />
@@ -115,18 +115,16 @@ export default function TurnoShow({
                         </div>
                     </div>
 
-                    {clientes.length > 0 &&
-                        turno.estado !== "cancelado" &&
-                        puedeEditar && (
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setIsEditModalOpen(true)}
-                            >
-                                <Edit2 className="w-4 h-4 mr-2" />
-                                Editar Turno
-                            </Button>
-                        )}
+                    {clientes.length > 0 && puedeEditarTurno(turno) && (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setIsEditModalOpen(true)}
+                        >
+                            <Edit2 className="w-4 h-4 mr-2" />
+                            Editar Ficha
+                        </Button>
+                    )}
                 </div>
 
                 {/* Grid de Información: Mascota y Propietario */}

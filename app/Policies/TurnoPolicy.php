@@ -48,7 +48,7 @@ class TurnoPolicy
             return false;
         }
         return $user->hasAnyRole(['dueño_principal', 'dueño'], 'tenant')
-            || $user->can('turnos.create_own');
+            || $user->hasPermissionTo('turnos.editar_finalizado', 'tenant');
     }
 
 
@@ -60,19 +60,24 @@ class TurnoPolicy
         if (! $this->isAuthorizedTenantUser($user)) {
             return false;
         }
-        if ($user->hasAnyRole(['dueño_principal'], 'tenant')) {
+
+        if ($user->hasRole('dueño_principal', 'tenant')) {
             return true;
         }
-
-        if (in_array($turno->estado, ['listo', 'cancelado'], true)) {
+        if ($turno->estado === 'listo') {
+            return $user->checkPermissionTo('turnos.editar_finalizado', 'tenant');
+        }
+        if ($turno->estado === 'cancelado') {
             return false;
         }
+
+
+
         if ($turno->estado === 'en_proceso' && $turno->empleado_id !== null && $turno->empleado_id !== $user->id) {
-            return false;
+            return $user->checkPermissionTo('kanban.cambiar_estado_cualquiera', 'tenant');
         }
 
-        return $user->checkPermissionTo('turnos.update_own', 'tenant')
-            || $user->checkPermissionTo('kanban.manage_any', 'tenant');
+        return true;
     }
 
     public function cambiarEstado(TenantUser $user, Turno $turno): bool
@@ -81,7 +86,7 @@ class TurnoPolicy
             return false;
         }
 
-        if ($user->hasRole('dueño_principal', 'tenant')) {
+        if ($user->hasRole('dueño_principal', 'tenant') || $user->checkPermissionTo('kanban.cambiar_estado_cualquiera', 'tenant')) {
             return true;
         }
 
@@ -93,8 +98,7 @@ class TurnoPolicy
             return false;
         }
 
-        return $user->checkPermissionTo('kanban.manage_any', 'tenant')
-            || $user->checkPermissionTo('turnos.update_own', 'tenant');
+        return true;
     }
 
 

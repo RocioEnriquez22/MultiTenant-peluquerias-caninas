@@ -49,8 +49,9 @@ class HandleInertiaRequests extends Middleware
                 ->intersect([
                     'dashboard.view',
                     'turnos.view_all',
+                    'turnos.editar_finalizado',
                     'kanban.view',
-                    'kanban.manage_any',
+                    'kanban.cambiar_estado_cualquiera',
                     'analytics.report',
                     'whatsapp.manage',
                     'business_settings.manage',

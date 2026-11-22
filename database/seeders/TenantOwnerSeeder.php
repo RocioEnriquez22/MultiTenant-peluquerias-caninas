@@ -29,13 +29,14 @@ class TenantOwnerSeeder extends Seeder
             'dashboard.view',
             'turnos.view_all',
             'kanban.view',
-            'kanban.manage_any',
+            'kanban.cambiar_estado_cualquiera',
             'analytics.report',
             'whatsapp.manage',
             'business_settings.manage',
             'gestionar.users',
             'gestionar.permisos',
             'gestionar.servicios',
+            'turnos.editar_finalizado',
         ];
 
         $owner = TenantUser::firstOrCreate( //para evitar crear otra cuenta con el mismo email
