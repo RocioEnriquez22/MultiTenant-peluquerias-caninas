@@ -675,7 +675,7 @@ function KanbanItem({
         ...attributes,
         className: cn(
             isSortableDragging && "opacity-50 z-50",
-            disabled && "opacity-50",
+            disabled && "opacity-70",
             className,
         ),
         children: props.children,

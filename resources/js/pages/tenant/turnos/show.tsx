@@ -73,6 +73,17 @@ export default function TurnoShow({
     servicios = [],
 }: Props) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [mostrarAvisoEdicion, setMostrarAvisoEdicion] = useState(false);
+    const handleAbrirEdicion = () => {
+        setIsEditModalOpen(true);
+        setMostrarAvisoEdicion(true);
+    };
+
+    React.useEffect(() => {
+        if (!mostrarAvisoEdicion) return;
+        const timer = setTimeout(() => setMostrarAvisoEdicion(false), 6000);
+        return () => clearTimeout(timer);
+    }, [mostrarAvisoEdicion]);
 
     const estadoCfg = ESTADO_BADGE[turno.estado] || ESTADO_BADGE.pendiente;
 
@@ -119,13 +130,24 @@ export default function TurnoShow({
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => setIsEditModalOpen(true)}
+                            onClick={handleAbrirEdicion}
                         >
                             <Edit2 className="w-4 h-4 mr-2" />
                             Editar Ficha
                         </Button>
                     )}
                 </div>
+                {mostrarAvisoEdicion && (
+                    <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900 shadow-xs animate-in fade-in duration-200">
+                        <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                        <p className="leading-relaxed">
+                            <strong>Aviso de edición:</strong> Recuerda que
+                            modificar la ficha de este turno está destinado
+                            únicamente a corregir errores en los datos,
+                            servicios o cobros registrados.
+                        </p>
+                    </div>
+                )}
 
                 {/* Grid de Información: Mascota y Propietario */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
