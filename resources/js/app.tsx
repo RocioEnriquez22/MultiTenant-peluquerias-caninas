@@ -22,7 +22,7 @@ void createInertiaApp({
             case name === "tenant/welcome":
                 return null;
             case name.startsWith("tenant/auth/"):
-                return AuthLayout;
+                return null;
             case name === "tenant/tenantDashboard":
                 return TenantLayout;
             case name === "tenant/users/index":
