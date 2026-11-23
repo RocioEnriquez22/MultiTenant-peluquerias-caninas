@@ -210,6 +210,16 @@ export default function TurnoFormModal({
                             : "Selecciona el cliente, su mascota y los servicios a realizar."}
                     </DialogDescription>
                 </DialogHeader>
+                <DialogHeader>
+                    <DialogTitle>
+                        {isEditing ? "Editar Turno" : "Agendar Nuevo Turno"}
+                    </DialogTitle>
+                    <DialogDescription>
+                        {isEditing
+                            ? "Actualiza los datos, servicios o detalles del turno seleccionado."
+                            : "Selecciona el cliente, la mascota, la fecha/hora y los servicios."}
+                    </DialogDescription>
+                </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-4 py-2">
                     {/* Cliente y Mascota */}
