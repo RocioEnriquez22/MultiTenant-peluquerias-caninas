@@ -4,6 +4,7 @@ namespace App\Http\Requests\Tenant;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class MascotaRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class MascotaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,8 +23,17 @@ class MascotaRequest extends FormRequest
      */
     public function rules(): array
     {
+        $clienteId = $this->route('cliente')?->id ?? $this->route('cliente');
+        $mascotaId = $this->route('mascota')?->id ?? $this->route('mascota');
         return [
-            'nombre' => ['required', 'string', 'max:255', 'unique:mascotas,nombre'],
+            'nombre' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('mascotas', 'nombre')
+                    ->where('cliente_id', $clienteId)
+                    ->ignore($mascotaId)
+            ],
             'especie_raza' => ['nullable', 'string', 'max:255'],
             'dimension' => ['nullable', 'string', 'max:50'],
             'observaciones' => ['nullable', 'string'],

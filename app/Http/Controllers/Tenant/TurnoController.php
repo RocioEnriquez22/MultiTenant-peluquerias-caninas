@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Jobs\EnviarConfirmacionTurnoJob;
 
 class TurnoController extends Controller
 {
@@ -134,7 +135,7 @@ class TurnoController extends Controller
 
 
     /**
-     * Agenda un nuevo turno (sin asignar empleado aún) y asocia sus servicios en turno_servicio.
+     * Agenda un nuevo turno (sin asignar empleado aún) y registra en turno_servicio, que servicio se esta va a dar.
      */
     public function store(TurnoRequest $request): RedirectResponse
     {
@@ -168,9 +169,14 @@ class TurnoController extends Controller
             }
 
             $turno->servicios()->attach($pivotData);
+
+            EnviarConfirmacionTurnoJob::dispatch(
+                $turno->id,
+                tenant('nombre_comercial') ?? 'Peluquería Canina'
+            );
         });
 
-        $this->flashToast('success', 'Turno agendado correctamente.');
+        $this->flashToast('success', 'Turno agendado correctamente y confirmacion enviada.');
 
         return redirect()->back();
     }

@@ -19,6 +19,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'nombre_dueño',
         'email_contacto',
         'telefono',
+        'whatsapp_phone_number_id',
         'activo',
         'data',
     ];
@@ -38,6 +39,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'nombre_dueño',
             'email_contacto',
             'telefono',
+            'whatsapp_phone_number_id',
             'activo',
         ];
     }
